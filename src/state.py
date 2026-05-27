@@ -14,6 +14,8 @@ DWELL_MAX = 3.0
 DWELL_DEFAULT = 1.0
 
 VALID_CORNERS = ("top-left", "top-right", "bottom-left", "bottom-right")
+VALID_LANGS = ("zh-TW", "en")
+DEFAULT_LANG = "zh-TW"
 
 
 @dataclass
@@ -22,6 +24,7 @@ class State:
     auto_click_enabled: bool = True
     autostart_enabled: bool = False
     window_corner: str = "top-right"
+    lang: str = DEFAULT_LANG
 
     _listeners: List[Callable[["State"], None]] = field(
         default_factory=list, repr=False, compare=False
@@ -33,6 +36,7 @@ class State:
             "auto_click_enabled": self.auto_click_enabled,
             "autostart_enabled": self.autostart_enabled,
             "window_corner": self.window_corner,
+            "lang": self.lang,
         }
 
     @classmethod
@@ -42,6 +46,7 @@ class State:
             auto_click_enabled=bool(data.get("auto_click_enabled", True)),
             autostart_enabled=bool(data.get("autostart_enabled", False)),
             window_corner=_validate_corner(data.get("window_corner", "top-right")),
+            lang=_validate_lang(data.get("lang", DEFAULT_LANG)),
         )
 
     def subscribe(self, callback: Callable[["State"], None]) -> None:
@@ -68,6 +73,11 @@ class State:
 
     def set_corner(self, corner: str) -> None:
         self.window_corner = _validate_corner(corner)
+        self.save()
+        self._notify()
+
+    def set_lang(self, lang: str) -> None:
+        self.lang = _validate_lang(lang)
         self.save()
         self._notify()
 
@@ -105,3 +115,7 @@ def _clamp_dwell(value: float) -> float:
 
 def _validate_corner(corner: str) -> str:
     return corner if corner in VALID_CORNERS else "top-right"
+
+
+def _validate_lang(lang: str) -> str:
+    return lang if lang in VALID_LANGS else DEFAULT_LANG

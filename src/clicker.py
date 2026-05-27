@@ -1,33 +1,37 @@
 """Dwell-time auto-click engine.
 
 Runs a background thread that polls the cursor position, measures how long it
-has stayed within a small radius, and triggers a left-click via SendInput
+has stayed within a tolerance radius, and triggers a left-click via SendInput
 when the dwell time threshold is reached.
 
-We intentionally use polling (not a low-level mouse hook) to keep the impl
-simple and avoid antivirus false positives. CPU cost is negligible at 30 Hz.
+Polling (not low-level hook) keeps the impl simple and avoids antivirus
+false positives. CPU cost is negligible at 30 Hz.
+
+The dwell click intentionally fires anywhere on screen — INCLUDING over the
+app's own UI. This is required so head-mouse users can dwell-click the PAUSE
+button to escape the YouTube auto-click trap.
 """
 import threading
 import time
-from typing import Callable, Optional
+from typing import Optional
 
 from src import win32_input
 from src.state import State
 
 
 POLL_HZ = 30
-MOVE_TOLERANCE_PX = 8
+MOVE_TOLERANCE_PX = 25  # head-mouse users jitter; 25px ~= a fingertip diameter
 
 
 class Clicker:
-    def __init__(self, state: State, is_over_app_window: Optional[Callable[[int, int], bool]] = None):
+    def __init__(self, state: State):
         self.state = state
-        self.is_over_app_window = is_over_app_window or (lambda x, y: False)
         self._stop_event = threading.Event()
         self._thread: Optional[threading.Thread] = None
         self._last_pos: Optional[tuple[int, int]] = None
         self._dwell_started_at: Optional[float] = None
         self._cooldown_until: float = 0.0
+        self._paused_until: float = 0.0
 
     def start(self) -> None:
         if self._thread and self._thread.is_alive():
@@ -38,6 +42,14 @@ class Clicker:
 
     def stop(self) -> None:
         self._stop_event.set()
+
+    def temporary_pause(self, seconds: float) -> None:
+        """Pause the auto-clicker for a short window. Used while the user is
+        in the middle of a manual action countdown so they don't get a
+        double-click at the destination."""
+        self._paused_until = time.monotonic() + max(0.0, seconds)
+        self._last_pos = None
+        self._dwell_started_at = None
 
     def _loop(self) -> None:
         period = 1.0 / POLL_HZ
@@ -55,15 +67,10 @@ class Clicker:
             return
 
         now = time.monotonic()
-        if now < self._cooldown_until:
+        if now < self._cooldown_until or now < self._paused_until:
             return
 
         x, y = win32_input.get_cursor_pos()
-
-        if self.is_over_app_window(x, y):
-            self._last_pos = None
-            self._dwell_started_at = None
-            return
 
         if self._last_pos is None:
             self._last_pos = (x, y)

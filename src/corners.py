@@ -1,8 +1,8 @@
 from src.win32_input import get_screen_size
 
 
-WINDOW_W = 240
-WINDOW_H = 320
+WINDOW_W = 260
+WINDOW_H = 400
 MARGIN = 12
 
 

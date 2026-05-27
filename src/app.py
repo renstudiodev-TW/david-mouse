@@ -4,10 +4,18 @@ from src.state import State
 from src.ui import UI
 
 
+# How long the user has to move their cursor to the target after dwell-clicking
+# an action button (L / R / Double). Head-mouse users need plenty of time.
+ACTION_COUNTDOWN_S = 2.5
+# Pause the auto-clicker slightly longer than the countdown so the dwell
+# engine doesn't fire an extra click at the destination.
+ACTION_PAUSE_PAD_S = 0.7
+
+
 class App:
     def __init__(self):
         self.state = State.load()
-        self.clicker = Clicker(self.state, is_over_app_window=self._is_over_window)
+        self.clicker = Clicker(self.state)
         self.ui = UI(
             state=self.state,
             on_left_click=self._do_left_click,
@@ -17,27 +25,21 @@ class App:
             on_move_corner=self._move_corner,
             on_dwell_change=self.state.set_dwell,
             on_autostart_change=self._set_autostart,
+            on_lang_change=self.state.set_lang,
         )
 
-    def _is_over_window(self, x: int, y: int) -> bool:
-        try:
-            root = self.ui.root
-            wx = root.winfo_rootx()
-            wy = root.winfo_rooty()
-            ww = root.winfo_width()
-            wh = root.winfo_height()
-            return wx <= x <= wx + ww and wy <= y <= wy + wh
-        except Exception:
-            return False
+    def _arm_action(self, label_key: str, fn) -> None:
+        self.clicker.temporary_pause(ACTION_COUNTDOWN_S + ACTION_PAUSE_PAD_S)
+        self.ui.start_countdown(label_key, ACTION_COUNTDOWN_S, fire=fn)
 
     def _do_left_click(self) -> None:
-        self.ui.schedule(win32_input.left_click, delay_ms=120)
+        self._arm_action("countdown_left", win32_input.left_click)
 
     def _do_double_click(self) -> None:
-        self.ui.schedule(win32_input.double_click, delay_ms=120)
+        self._arm_action("countdown_double", win32_input.double_click)
 
     def _do_right_click(self) -> None:
-        self.ui.schedule(win32_input.right_click, delay_ms=120)
+        self._arm_action("countdown_right", win32_input.right_click)
 
     def _toggle_auto(self) -> None:
         self.state.toggle_auto_click()
