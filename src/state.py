@@ -25,6 +25,7 @@ class State:
     autostart_enabled: bool = False
     window_corner: str = "top-right"
     lang: str = DEFAULT_LANG
+    compact_mode: bool = False
 
     _listeners: List[Callable[["State"], None]] = field(
         default_factory=list, repr=False, compare=False
@@ -37,6 +38,7 @@ class State:
             "autostart_enabled": self.autostart_enabled,
             "window_corner": self.window_corner,
             "lang": self.lang,
+            "compact_mode": self.compact_mode,
         }
 
     @classmethod
@@ -47,6 +49,7 @@ class State:
             autostart_enabled=bool(data.get("autostart_enabled", False)),
             window_corner=_validate_corner(data.get("window_corner", "top-right")),
             lang=_validate_lang(data.get("lang", DEFAULT_LANG)),
+            compact_mode=bool(data.get("compact_mode", False)),
         )
 
     def subscribe(self, callback: Callable[["State"], None]) -> None:
@@ -78,6 +81,11 @@ class State:
 
     def set_lang(self, lang: str) -> None:
         self.lang = _validate_lang(lang)
+        self.save()
+        self._notify()
+
+    def toggle_compact(self) -> None:
+        self.compact_mode = not self.compact_mode
         self.save()
         self._notify()
 

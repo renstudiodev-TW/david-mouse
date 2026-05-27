@@ -11,11 +11,18 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+import tempfile
 from PIL import Image
-import tkinter as tk
+
+# Redirect persistence to a throwaway dir BEFORE importing the app so the
+# user's real %APPDATA%\HeadMouseHelper\settings.json is never touched.
+from src import state as _state_module
+_TMP_SETTINGS_DIR = Path(tempfile.mkdtemp(prefix="hmh-shots-"))
+_state_module.SETTINGS_DIR = _TMP_SETTINGS_DIR
+_state_module.SETTINGS_FILE = _TMP_SETTINGS_DIR / "settings.json"
 
 from src.app import App
-from src.state import State, SETTINGS_FILE
+from src.state import SETTINGS_FILE
 
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "docs" / "screenshots"
@@ -76,12 +83,14 @@ def _capture_hwnd(hwnd: int) -> Image.Image:
     return img.convert("RGB")
 
 
-def render_and_capture(out_path: Path, lang: str, paused: bool = False, countdown_key: str = None):
+def render_and_capture(out_path: Path, lang: str, paused: bool = False, countdown_key: str = None, compact: bool = False):
     if SETTINGS_FILE.exists():
         SETTINGS_FILE.unlink()
 
     app = App()
     app.state.set_lang(lang)
+    if compact:
+        app.state.toggle_compact()
     if paused:
         app.state.toggle_auto_click()
 
@@ -120,15 +129,18 @@ def render_and_capture(out_path: Path, lang: str, paused: bool = False, countdow
 
 def main():
     SHOTS = [
-        ("ui-zh-running.png", "zh-TW", False, None),
-        ("ui-zh-paused.png", "zh-TW", True, None),
-        ("ui-zh-countdown.png", "zh-TW", False, "countdown_left"),
-        ("ui-en-running.png", "en", False, None),
-        ("ui-en-paused.png", "en", True, None),
-        ("ui-en-countdown.png", "en", False, "countdown_left"),
+        ("ui-zh-running.png", "zh-TW", False, None, False),
+        ("ui-zh-paused.png", "zh-TW", True, None, False),
+        ("ui-zh-countdown.png", "zh-TW", False, "countdown_left", False),
+        ("ui-zh-compact-running.png", "zh-TW", False, None, True),
+        ("ui-zh-compact-paused.png", "zh-TW", True, None, True),
+        ("ui-en-running.png", "en", False, None, False),
+        ("ui-en-paused.png", "en", True, None, False),
+        ("ui-en-countdown.png", "en", False, "countdown_left", False),
+        ("ui-en-compact-running.png", "en", False, None, True),
     ]
-    for name, lang, paused, cd in SHOTS:
-        render_and_capture(OUT_DIR / name, lang, paused=paused, countdown_key=cd)
+    for name, lang, paused, cd, compact in SHOTS:
+        render_and_capture(OUT_DIR / name, lang, paused=paused, countdown_key=cd, compact=compact)
         time.sleep(0.2)
 
 

@@ -21,6 +21,8 @@ STRINGS: Dict[str, Dict[str, str]] = {
         "countdown_double": "{n} 秒後雙擊",
         "countdown_fire": "點擊！",
         "move_now": "移動游標到目標",
+        "compact": "🗗 精簡",
+        "expand": "🗖 展開",
     },
     "en": {
         "app_title": "HeadMouse Helper",
@@ -37,6 +39,8 @@ STRINGS: Dict[str, Dict[str, str]] = {
         "countdown_double": "Double click in {n}s",
         "countdown_fire": "Click!",
         "move_now": "Move cursor to target",
+        "compact": "🗗 Compact",
+        "expand": "🗖 Expand",
     },
 }
 

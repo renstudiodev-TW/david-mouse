@@ -26,6 +26,7 @@ class App:
             on_dwell_change=self.state.set_dwell,
             on_autostart_change=self._set_autostart,
             on_lang_change=self.state.set_lang,
+            on_toggle_compact=self.state.toggle_compact,
         )
 
     def _is_over_pause_button(self, x: int, y: int) -> bool:
