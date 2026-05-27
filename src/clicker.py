@@ -13,7 +13,7 @@ button to escape the YouTube auto-click trap.
 """
 import threading
 import time
-from typing import Optional
+from typing import Callable, Optional
 
 from src import win32_input
 from src.state import State
@@ -24,8 +24,16 @@ MOVE_TOLERANCE_PX = 25  # head-mouse users jitter; 25px ~= a fingertip diameter
 
 
 class Clicker:
-    def __init__(self, state: State):
+    def __init__(
+        self,
+        state: State,
+        is_over_resume_zone: Optional[Callable[[int, int], bool]] = None,
+    ):
         self.state = state
+        # When auto-click is paused, dwell-click still works but ONLY inside
+        # this zone — typically the PAUSE/RESUME button rect — otherwise a
+        # head-mouse user would have no way to re-enable auto-click.
+        self.is_over_resume_zone = is_over_resume_zone or (lambda x, y: False)
         self._stop_event = threading.Event()
         self._thread: Optional[threading.Thread] = None
         self._last_pos: Optional[tuple[int, int]] = None
@@ -61,16 +69,20 @@ class Clicker:
             time.sleep(period)
 
     def _tick(self) -> None:
-        if not self.state.auto_click_enabled:
-            self._last_pos = None
-            self._dwell_started_at = None
-            return
-
         now = time.monotonic()
         if now < self._cooldown_until or now < self._paused_until:
             return
 
         x, y = win32_input.get_cursor_pos()
+
+        if not self.state.auto_click_enabled:
+            # Paused: only respond to dwell when cursor is over the resume zone
+            # (the big PAUSE button). Otherwise a head-mouse user could never
+            # un-pause.
+            if not self.is_over_resume_zone(x, y):
+                self._last_pos = None
+                self._dwell_started_at = None
+                return
 
         if self._last_pos is None:
             self._last_pos = (x, y)

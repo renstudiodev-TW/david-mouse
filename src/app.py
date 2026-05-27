@@ -15,7 +15,7 @@ ACTION_PAUSE_PAD_S = 0.7
 class App:
     def __init__(self):
         self.state = State.load()
-        self.clicker = Clicker(self.state)
+        self.clicker = Clicker(self.state, is_over_resume_zone=self._is_over_pause_button)
         self.ui = UI(
             state=self.state,
             on_left_click=self._do_left_click,
@@ -27,6 +27,17 @@ class App:
             on_autostart_change=self._set_autostart,
             on_lang_change=self.state.set_lang,
         )
+
+    def _is_over_pause_button(self, x: int, y: int) -> bool:
+        try:
+            btn = self.ui.pause_btn
+            bx = btn.winfo_rootx()
+            by = btn.winfo_rooty()
+            bw = btn.winfo_width()
+            bh = btn.winfo_height()
+            return bx <= x <= bx + bw and by <= y <= by + bh
+        except Exception:
+            return False
 
     def _arm_action(self, label_key: str, fn) -> None:
         self.clicker.temporary_pause(ACTION_COUNTDOWN_S + ACTION_PAUSE_PAD_S)

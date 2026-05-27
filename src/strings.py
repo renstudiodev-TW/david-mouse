@@ -9,7 +9,7 @@ STRINGS: Dict[str, Dict[str, str]] = {
     "zh-TW": {
         "app_title": "HeadMouse Helper 頭控滑鼠助手",
         "auto_on": "● 自動點擊中",
-        "auto_paused": "⏸ 已暫停",
+        "auto_paused": "⏸ 已暫停\n停留此處可恢復",
         "btn_left": "◐ 左鍵",
         "btn_right": "◑ 右鍵",
         "btn_double": "◐◐ 雙擊",
@@ -25,7 +25,7 @@ STRINGS: Dict[str, Dict[str, str]] = {
     "en": {
         "app_title": "HeadMouse Helper",
         "auto_on": "● AUTO-CLICK ON",
-        "auto_paused": "⏸ PAUSED",
+        "auto_paused": "⏸ PAUSED\nDwell here to resume",
         "btn_left": "◐ Left",
         "btn_right": "◑ Right",
         "btn_double": "◐◐ Double",
