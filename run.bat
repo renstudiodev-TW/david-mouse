@@ -7,3 +7,8 @@ if %errorlevel%==0 (
 ) else (
     python -m src.main
 )
+if not %errorlevel%==0 (
+    echo.
+    echo App exited with error.
+    pause
+)
