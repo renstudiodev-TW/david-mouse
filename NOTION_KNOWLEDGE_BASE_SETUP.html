@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>Notion 知識庫設定教學 — Dev Sessions</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", "Microsoft JhengHei", sans-serif;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    line-height: 1.7;
+    color: #2d2d2d;
+    background: #fafafa;
+  }
+  h1 {
+    border-bottom: 3px solid #2383e2;
+    padding-bottom: 12px;
+    font-size: 28px;
+  }
+  h2 {
+    margin-top: 48px;
+    font-size: 22px;
+    color: #1a1a1a;
+    border-left: 5px solid #2383e2;
+    padding-left: 14px;
+  }
+  h3 {
+    margin-top: 28px;
+    font-size: 17px;
+    color: #444;
+  }
+  .step {
+    background: #fff;
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .step-num {
+    display: inline-block;
+    background: #2383e2;
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-weight: 600;
+    margin-right: 10px;
+  }
+  .tip {
+    background: #fff8d8;
+    border-left: 4px solid #f1c232;
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 4px;
+  }
+  .warn {
+    background: #fde7e7;
+    border-left: 4px solid #d63838;
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 4px;
+  }
+  .ok {
+    background: #e8f5e9;
+    border-left: 4px solid #4caf50;
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 4px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    background: #fff;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  th {
+    background: #f0f4fa;
+    font-weight: 600;
+  }
+  code {
+    background: #f1f1f1;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+    color: #c0392b;
+  }
+  pre {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+  }
+  .ascii-mock {
+    background: #fff;
+    border: 2px dashed #999;
+    padding: 18px;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    white-space: pre;
+    overflow-x: auto;
+    border-radius: 4px;
+  }
+  ul li, ol li { margin: 6px 0; }
+  .toc {
+    background: #f0f4fa;
+    border-radius: 8px;
+    padding: 16px 24px;
+    margin: 24px 0;
+  }
+  .toc a { color: #2383e2; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .checklist li {
+    list-style: none;
+    margin-left: -20px;
+  }
+  .checklist li::before {
+    content: "☐ ";
+    margin-right: 6px;
+    color: #2383e2;
+    font-weight: 700;
+  }
+  .header-box {
+    background: linear-gradient(135deg, #2383e2 0%, #4ba3f0 100%);
+    color: #fff;
+    padding: 24px 28px;
+    border-radius: 10px;
+    margin-bottom: 32px;
+  }
+  .header-box h1 {
+    color: #fff;
+    border-bottom: none;
+    margin: 0 0 8px;
+  }
+  .header-box p {
+    margin: 4px 0;
+    opacity: 0.92;
+  }
+  kbd {
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+  }
+</style>
+</head>
+<body>
+
+<div class="header-box">
+  <h1>Notion 知識庫設定教學</h1>
+  <p>📚 把每次 Claude Code 開發流程匯入 Notion，累積你的個人技術知識庫</p>
+  <p>⏱️ 預計花費：15 分鐘（一次設定，永久使用）</p>
+  <p>🎯 為誰寫：張博仁（RC），仁格數位科技工坊</p>
+</div>
+
+<div class="toc">
+  <strong>📋 目錄</strong>
+  <ul>
+    <li><a href="#why">為什麼這樣設計？</a></li>
+    <li><a href="#step1">Step 1：建立新 Page 作為知識庫根目錄</a></li>
+    <li><a href="#step2">Step 2：建立「Dev Sessions」Database</a></li>
+    <li><a href="#step3">Step 3：設定 Database Properties</a></li>
+    <li><a href="#step4">Step 4：建立 Views（不同角度看資料）</a></li>
+    <li><a href="#step5">Step 5：第一次 import 今晚的 DEV_LOG.md</a></li>
+    <li><a href="#future">未來：每次開發完照這個流程做</a></li>
+    <li><a href="#advanced">進階：用 Notion API 自動化（暫不需要）</a></li>
+    <li><a href="#checklist">明天早上的 Checklist</a></li>
+  </ul>
+</div>
+
+<h2 id="why">🤔 為什麼這樣設計？</h2>
+
+<p>網路上很多人分享「用 Notion 整理 AI 開發流程」會犯一個錯：<strong>過度設計</strong>。一開始就建 5 個 database、20 種 tag、複雜的 relation——結果用了 2 次就放棄。</p>
+
+<p>我們反過來做：</p>
+
+<ul>
+  <li>✅ 只建 <strong>1 個 database</strong>（Dev Sessions）</li>
+  <li>✅ 每次開發產 1 個 <code>DEV_LOG.md</code>，直接 import 進去</li>
+  <li>✅ 累積 5-10 筆之後，<strong>看資料反推</strong>需要哪些分類，再加 database</li>
+  <li>❌ 不一開始建「Decisions / Patterns / Prompts」三個分類庫 — 沒資料時建分類是自欺欺人</li>
+</ul>
+
+<div class="tip">
+  <strong>💡 原則</strong>：先有資料、再有結構。Notion 強大在 database 可以隨時新增 property 跟 view，不要在空 database 上糾結結構。
+</div>
+
+<h2 id="step1">📁 Step 1：建立新 Page 作為知識庫根目錄</h2>
+
+<div class="step">
+  <p><span class="step-num">1</span><strong>打開 Notion，在左側 sidebar 點「+ Add a page」</strong></p>
+  <p><span class="step-num">2</span>命名為：<code>🧠 RC's Dev Knowledge Base</code>（或你喜歡的名字）</p>
+  <p><span class="step-num">3</span>icon 選一個（建議 🧠 大腦 / 📚 書 / 🛠️ 工具）</p>
+  <p><span class="step-num">4</span>cover 可省略</p>
+</div>
+
+<div class="ascii-mock">
+🧠 RC's Dev Knowledge Base
+─────────────────────────────
+（這層是空白頁，等下會在裡面建 database）
+</div>
+
+<h2 id="step2">🗂️ Step 2：建立「Dev Sessions」Database</h2>
+
+<div class="step">
+  <p><span class="step-num">1</span>在剛建的 Page 裡，<strong>按 <kbd>/</kbd> 鍵</strong>，輸入 <code>database</code></p>
+  <p><span class="step-num">2</span>選 <strong>「Table - Full page」</strong>（全頁面表格，比 inline 好用）</p>
+  <p><span class="step-num">3</span>名稱輸入：<code>Dev Sessions</code></p>
+  <p><span class="step-num">4</span>icon 選 💻 或 ⚡</p>
+</div>
+
+<div class="warn">
+  <strong>⚠️ 注意</strong>：選 "Full page" 不是 "Inline"。Full page 將來資料多了比較好操作，inline 會擠在 parent page 裡。
+</div>
+
+<h2 id="step3">⚙️ Step 3：設定 Database Properties</h2>
+
+<p>進入 Database 後，預設只有 Name 跟 Tags 兩個欄位。我們要改成下面這 8 個 properties：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Property 名稱</th>
+      <th>Type</th>
+      <th>用途</th>
+      <th>選項範例</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Name</strong></td>
+      <td>Title（預設）</td>
+      <td>專案/任務名稱</td>
+      <td>HeadMouse Helper</td>
+    </tr>
+    <tr>
+      <td><strong>Date</strong></td>
+      <td>Date</td>
+      <td>開發日期（或日期區間）</td>
+      <td>2026-05-27</td>
+    </tr>
+    <tr>
+      <td><strong>Status</strong></td>
+      <td>Status</td>
+      <td>專案狀態</td>
+      <td>In Progress / Shipped / Abandoned / Paused</td>
+    </tr>
+    <tr>
+      <td><strong>Stack</strong></td>
+      <td>Multi-select</td>
+      <td>用到的技術</td>
+      <td>Python, Tkinter, ctypes, Win32, PyInstaller</td>
+    </tr>
+    <tr>
+      <td><strong>Models Used</strong></td>
+      <td>Multi-select</td>
+      <td>協作的 AI model</td>
+      <td>Claude Opus 4.7, Gemini 2.5 Pro</td>
+    </tr>
+    <tr>
+      <td><strong>Project Type</strong></td>
+      <td>Select</td>
+      <td>專案類型</td>
+      <td>Desktop App / Web App / CLI Tool / Script / Demo</td>
+    </tr>
+    <tr>
+      <td><strong>Repo</strong></td>
+      <td>URL</td>
+      <td>GitHub / local 路徑</td>
+      <td>C:\Users\boren\Desktop\fordavicdmouse</td>
+    </tr>
+    <tr>
+      <td><strong>Hours Spent</strong></td>
+      <td>Number</td>
+      <td>實際開發時數（自己估）</td>
+      <td>4.5</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>怎麼新增/刪除 Property</h3>
+
+<div class="step">
+  <p><span class="step-num">1</span><strong>新增 property</strong>：點 table 右邊最後一欄的 <code>+</code> → 選 type → 命名</p>
+  <p><span class="step-num">2</span><strong>修改 property</strong>：點 column header → Edit property → 改 type 或選項</p>
+  <p><span class="step-num">3</span><strong>刪除 property</strong>：點 column header → Delete property（預設 Tags 可以刪）</p>
+</div>
+
+<div class="tip">
+  <strong>💡 Multi-select 小技巧</strong>：第一次輸入新標籤時直接打字按 Enter，Notion 會自動建選項。不用先去設定頁面手動建。
+</div>
+
+<h2 id="step4">👁️ Step 4：建立 Views（不同角度看資料）</h2>
+
+<p>同一份 database 可以有多個 view。建議先建 3 個：</p>
+
+<table>
+  <thead>
+    <tr><th>View 名稱</th><th>類型</th><th>用途</th><th>設定重點</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>All Sessions</strong></td>
+      <td>Table</td>
+      <td>總覽，看所有開發紀錄</td>
+      <td>顯示全部欄位，按 Date 排序（newest first）</td>
+    </tr>
+    <tr>
+      <td><strong>By Stack</strong></td>
+      <td>Board</td>
+      <td>看哪個技術做最多</td>
+      <td>Group by Stack（或 Project Type）</td>
+    </tr>
+    <tr>
+      <td><strong>Active</strong></td>
+      <td>Table</td>
+      <td>進行中的專案</td>
+      <td>Filter: Status = "In Progress"</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>建立 View 的方法</h3>
+
+<div class="step">
+  <p><span class="step-num">1</span>點 database 上方的 <strong>「+ Add view」</strong></p>
+  <p><span class="step-num">2</span>選 view 類型（Table / Board / Calendar / Gallery / List / Timeline）</p>
+  <p><span class="step-num">3</span>命名 → 點「Create」</p>
+  <p><span class="step-num">4</span>在 view 設定裡加 Sort、Filter、Group</p>
+</div>
+
+<h2 id="step5">📥 Step 5：第一次 import 今晚的 DEV_LOG.md</h2>
+
+<p>今晚 Claude 幫你產的 <code>DEV_LOG.md</code> 在這裡：</p>
+
+<pre>C:\Users\boren\Desktop\fordavicdmouse\DEV_LOG.md</pre>
+
+<h3>方法 A：新增一筆 row，把 markdown 貼進去（推薦）</h3>
+
+<div class="step">
+  <p><span class="step-num">1</span>在 Dev Sessions database 點 <strong>「+ New」</strong> 新增一列</p>
+  <p><span class="step-num">2</span>填欄位：
+    <ul>
+      <li>Name: <code>HeadMouse Helper</code></li>
+      <li>Date: <code>2026-05-27</code></li>
+      <li>Status: <code>In Progress</code>（早上 review 完改 Shipped）</li>
+      <li>Stack: <code>Python</code>, <code>Tkinter</code>, <code>ctypes</code>, <code>Win32</code>, <code>PyInstaller</code></li>
+      <li>Models Used: <code>Claude Opus 4.7</code>, <code>Gemini 2.5 Pro</code></li>
+      <li>Project Type: <code>Desktop App</code></li>
+      <li>Repo: <code>C:\Users\boren\Desktop\fordavicdmouse</code></li>
+    </ul>
+  </p>
+  <p><span class="step-num">3</span>點 row 左邊的 <strong>「Open」</strong>開啟詳情頁</p>
+  <p><span class="step-num">4</span>用記事本 / VS Code 開啟 <code>DEV_LOG.md</code>，全選複製</p>
+  <p><span class="step-num">5</span>到 Notion 詳情頁的內文區域，<strong>直接貼上</strong>（Notion 會自動轉成 H1/H2、表格、code block）</p>
+</div>
+
+<div class="ok">
+  <strong>✅ 成功標準</strong>：標題會自動變大、表格保留欄位、<code>```bash</code> code block 保留語法高亮。如果這三個都對，你的設定正確。
+</div>
+
+<h3>方法 B：用 Notion 內建 Markdown Import（也行，但較少彈性）</h3>
+
+<div class="step">
+  <p><span class="step-num">1</span>在 Notion 左下角點 <strong>「Settings &amp; Members」→「Settings」→「Import」</strong></p>
+  <p><span class="step-num">2</span>選 <strong>「Text &amp; Markdown」</strong></p>
+  <p><span class="step-num">3</span>選 <code>DEV_LOG.md</code> 檔案</p>
+  <p><span class="step-num">4</span>Notion 會新建一個 page，再把它拖進 Dev Sessions database 變成一筆 row</p>
+</div>
+
+<div class="warn">
+  <strong>⚠️ 方法 B 的缺點</strong>：import 進來的 page 是「獨立 page」不是「database row」，你還要手動拖進 database 然後填 properties。建議用方法 A。
+</div>
+
+<h2 id="future">🔄 未來：每次開發完照這個流程做</h2>
+
+<div class="step">
+  <p><strong>每次 Claude Code 開發完一個 session，做這 3 步：</strong></p>
+  <ol>
+    <li>確認專案目錄有 <code>DEV_LOG.md</code>（沒有就請 Claude 補產）</li>
+    <li>到 Notion 的 Dev Sessions database 新增 row、填 properties</li>
+    <li>把 DEV_LOG.md 內容貼進詳情頁</li>
+  </ol>
+  <p><strong>10 個 session 後</strong>（大約 1-2 個月），你會發現一些 pattern 反覆出現（例如「Win32 全域 hook」、「PyInstaller 打包」），那時候就可以從這些 row 抽出來建第二個 database「Reusable Patterns」。</p>
+</div>
+
+<h2 id="advanced">🤖 進階：用 Notion API 自動化（暫不需要）</h2>
+
+<p>當你累積到 30+ session 並開始嫌手動 import 麻煩時，可以做這個。<strong>現在跳過。</strong></p>
+
+<details>
+<summary>點此展開技術細節（明天先不用看）</summary>
+
+<h3>原理</h3>
+<ol>
+  <li>在 Notion <a href="https://www.notion.so/my-integrations">My Integrations</a> 建一個 internal integration，拿到 API token</li>
+  <li>把 Dev Sessions database 分享給這個 integration</li>
+  <li>寫一個 Python script 用 <code>notion-client</code> 套件，把 <code>DEV_LOG.md</code> 自動 push 上去</li>
+</ol>
+
+<h3>範例 script（將來用得到再寫）</h3>
+<pre>from notion_client import Client
+import os, frontmatter
+
+notion = Client(auth=os.getenv("NOTION_TOKEN"))
+DATABASE_ID = "xxx"
+
+with open("DEV_LOG.md", encoding="utf-8") as f:
+    content = f.read()
+
+notion.pages.create(
+    parent={"database_id": DATABASE_ID},
+    properties={
+        "Name": {"title": [{"text": {"content": "HeadMouse Helper"}}]},
+        "Date": {"date": {"start": "2026-05-27"}},
+        "Status": {"status": {"name": "In Progress"}},
+    },
+    children=[
+        # 解析 markdown 轉 Notion block...
+    ]
+)</pre>
+
+<p><strong>建議</strong>：等你做完 10+ session 再寫這個 script，否則只是 over-engineering。</p>
+
+</details>
+
+<h2 id="checklist">✅ 明天早上的 Checklist</h2>
+
+<div class="step">
+<ul class="checklist">
+  <li>打開 Notion，建立 Page「🧠 RC's Dev Knowledge Base」</li>
+  <li>在裡面建 Full-page database「Dev Sessions」</li>
+  <li>新增 7 個 properties（Date / Status / Stack / Models Used / Project Type / Repo / Hours Spent）</li>
+  <li>建立 3 個 views（All Sessions / By Stack / Active）</li>
+  <li>新增第一筆 row：HeadMouse Helper</li>
+  <li>把 <code>C:\Users\boren\Desktop\fordavicdmouse\DEV_LOG.md</code> 內容貼進去</li>
+  <li>檢查標題、表格、code block 是否正常顯示</li>
+  <li>讀 <code>OVERNIGHT_REPORT.md</code> 看昨晚開發成果</li>
+  <li>如果一切順利，把 Status 改成 Shipped 🎉</li>
+</ul>
+</div>
+
+<div class="tip">
+  <strong>💡 預估時間</strong>：第一次設定 15-20 分鐘。之後每次開發完只要 3-5 分鐘 import。
+</div>
+
+<h2>🙋 常見問題</h2>
+
+<h3>Q1：Notion 免費版夠用嗎？</h3>
+<p>夠。免費版的 block 數量上限對個人使用幾乎不可能用完。Block 限制只在「team workspace」才嚴格。</p>
+
+<h3>Q2：可以同步到手機看嗎？</h3>
+<p>可以。下載 Notion App，用同一個帳號登入，自動同步。</p>
+
+<h3>Q3：如果想匯出備份怎麼辦？</h3>
+<p>Settings → Settings &amp; Members → Settings → Export content → Markdown &amp; CSV。建議每季匯出一次當備份。</p>
+
+<h3>Q4：之後想加 tag「醫療輔具」可以嗎？</h3>
+<p>可以。在 Dev Sessions 新增一個 multi-select property「Domain」即可。一個 session 可以掛多個 domain tag。</p>
+
+<h3>Q5：如何快速搜尋之前做過某個技術？</h3>
+<p>在 Stack property 上 filter，例如 filter <code>Stack contains "Tkinter"</code>，會列出所有用過 Tkinter 的 session。</p>
+
+<hr>
+
+<p style="text-align:center;color:#888;margin-top:48px;">
+  📝 本教學由 Claude Opus 4.7 於 2026-05-27 深夜為仁格數位科技工坊張博仁（RC）撰寫<br>
+  有任何問題早上開新 session 問 Claude 即可，他會記得這個專案的脈絡。
+</p>
+
+</body>
+</html>
