@@ -3,7 +3,6 @@
 High contrast, large click targets for head-mouse users.
 """
 import tkinter as tk
-import webbrowser
 from typing import Callable, Optional
 
 from src.corners import WINDOW_W, WINDOW_H, geometry_string
@@ -21,8 +20,7 @@ COLOR_BTN_ACTIVE = "#454545"
 COLOR_ACCENT = "#2383e2"
 COLOR_AUTOSTART_ON = "#f1c232"
 COLOR_AUTOSTART_OFF = "#3a3a3a"
-COLOR_LINK = "#5aa9e6"
-CREDIT_URL = "https://renstudio.tw"
+COLOR_CREDIT = "#777777"
 CREDIT_TEXT = "dev by renstudio"
 
 FONT_LARGE = ("Segoe UI", 11, "bold")
@@ -178,13 +176,13 @@ class UI:
             btn.pack(side="left", expand=True, fill="x", padx=2, ipady=4)
             self.lang_buttons[code] = btn
 
-        # Credit link — sits at the very bottom, above the corner arrows row
+        # Credit — text only, not clickable: head-mouse users would otherwise
+        # dwell-trigger it by mistake while reaching for the corner arrows.
         credit = tk.Label(
             self.root, text=CREDIT_TEXT, font=FONT_SMALL,
-            fg=COLOR_LINK, bg=COLOR_BG, cursor="hand2",
+            fg=COLOR_CREDIT, bg=COLOR_BG,
         )
         credit.pack(side="bottom", pady=(0, 2))
-        credit.bind("<Button-1>", lambda _e: webbrowser.open(CREDIT_URL))
 
         # Bottom corner arrows
         bottom = tk.Frame(self.root, bg=COLOR_BG)
