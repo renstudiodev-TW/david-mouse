@@ -54,7 +54,7 @@
 - [ ] **多螢幕支援**：目前角落瞬移只看主螢幕（`GetSystemMetrics(SM_CXSCREEN/SM_CYSCREEN)`）。多螢幕情境會落在第 1 號螢幕的角落
 - [ ] **David 真實故事**：`docs/index.html` 與 `docs/en/index.html` 的 `#story` 區塊都用紅色 PLACEHOLDER 標記，內容是我合理推測的占位文
 - [ ] **募款帳戶資訊**：`#donate` 區塊以「Coming soon」狀態呈現，待補銀行/分行/帳號
-- [ ] **GitHub repo URL**：`README.md` 與兩份 HTML 內提到的 `git clone https://github.com/renstudio-dev/david-mouse` 是占位 URL。實際還沒建 repo
+- [ ] **GitHub repo URL**：`README.md` 與兩份 HTML 內提到的 `git clone https://github.com/renstudiodev-TW/david-mouse` 是占位 URL。實際還沒建 repo
 
 ---
 
@@ -134,7 +134,7 @@ pip install pyinstaller
    - 等 RC 開好戶就填進去
 
 3. **GitHub repo 還沒建**
-   - HTML 跟 README 提到的 `https://github.com/renstudio-dev/david-mouse` 是占位 URL
+   - HTML 跟 README 提到的 `https://github.com/renstudiodev-TW/david-mouse` 是占位 URL
    - 早上若要建 repo，把所有占位 URL 改成真實的
 
 ### 🟡 建議檢查（不會壞，但可以更好）
@@ -246,7 +246,7 @@ b548665 Initial commit
 4. 跑 `.\build.bat` 驗證 PyInstaller 能打包成功
 
 ### ☐ 重要（建議做）
-5. 建 GitHub repo `renstudio-dev/david-mouse`，把所有占位 URL 替換成真實 URL
+5. 建 GitHub repo `renstudiodev-TW/david-mouse`，把所有占位 URL 替換成真實 URL
 6. 重新拍截圖（如果 David 故事或介面有改動）：`python tools\capture_screenshots.py`
 7. 部署網頁到 Netlify 或放到 renstudio.tw/david-mouse/
 
