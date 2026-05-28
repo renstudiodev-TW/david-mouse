@@ -9,9 +9,12 @@ A free Windows tool that helps head-mouse users avoid accidental clicks while wa
 ## Quick start
 
 ```bat
-install.bat   :: auto-installs Python 3.12 if missing, then deps (per-user, no admin)
-run.bat       :: launch the app
+install.bat   :: one-time: auto-installs Python 3.12 if missing, then deps (per-user, no admin)
+run.vbs       :: launch the app — silent, no console window (recommended)
+run.bat       :: launch the app — shows a console window (alternative)
 ```
+
+UI is available in 繁中 / English / 日本語 / 한국어, switchable from the language row.
 
 ## Build a standalone .exe
 
