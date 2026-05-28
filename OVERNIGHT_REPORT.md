@@ -1,4 +1,4 @@
-# Overnight Report — HeadMouse Helper
+# Overnight Report — David Mouse
 
 > 給 RC 早上看的工作紀錄。本檔同時方便匯入 Notion（Markdown-friendly）。
 
@@ -41,7 +41,7 @@
 | Dwell time 滑桿（0.5 ~ 3.0s） | ✅ | `src/ui.py` + `src/state.py` |
 | 視窗四角箭頭瞬移 | ✅ | `src/corners.py` + `src/ui.py` |
 | 開機自動啟動（Startup folder .lnk，不寫 registry） | ✅ | `src/autostart.py` |
-| 偏好設定持久化（`%APPDATA%\HeadMouseHelper\settings.json`） | ✅ | `src/state.py` |
+| 偏好設定持久化（`%APPDATA%\DavidMouse\settings.json`） | ✅ | `src/state.py` |
 | 全域 dwell-click 偵測 + SendInput 觸發 | ✅ | `src/clicker.py` + `src/win32_input.py` |
 | 中文／英文 i18n 切換（介面內直接切） | ✅ | `src/strings.py` |
 | 6 張軟體截圖（zh / en × running / paused / countdown） | ✅ | `docs/screenshots/` |
@@ -50,11 +50,11 @@
 
 ### 🚧 TODO（不影響核心使用）
 
-- [ ] **打包後的 .exe**：`build.bat` 已寫好，但沒實際跑過 PyInstaller。早上跑 `build.bat` 一次驗證能產出 `dist\HeadMouseHelper.exe`
+- [ ] **打包後的 .exe**：`build.bat` 已寫好，但沒實際跑過 PyInstaller。早上跑 `build.bat` 一次驗證能產出 `dist\david-mouse.exe`
 - [ ] **多螢幕支援**：目前角落瞬移只看主螢幕（`GetSystemMetrics(SM_CXSCREEN/SM_CYSCREEN)`）。多螢幕情境會落在第 1 號螢幕的角落
 - [ ] **David 真實故事**：`docs/index.html` 與 `docs/en/index.html` 的 `#story` 區塊都用紅色 PLACEHOLDER 標記，內容是我合理推測的占位文
 - [ ] **募款帳戶資訊**：`#donate` 區塊以「Coming soon」狀態呈現，待補銀行/分行/帳號
-- [ ] **GitHub repo URL**：`README.md` 與兩份 HTML 內提到的 `git clone https://github.com/renstudio-dev/headmouse-helper` 是占位 URL。實際還沒建 repo
+- [ ] **GitHub repo URL**：`README.md` 與兩份 HTML 內提到的 `git clone https://github.com/renstudio-dev/david-mouse` 是占位 URL。實際還沒建 repo
 
 ---
 
@@ -96,7 +96,7 @@ python -m http.server 8080
 cd C:\Users\boren\Desktop\fordavicdmouse
 pip install pyinstaller
 .\build.bat
-:: 完成後 .exe 在 dist\HeadMouseHelper.exe
+:: 完成後 .exe 在 dist\david-mouse.exe
 ```
 
 ---
@@ -134,7 +134,7 @@ pip install pyinstaller
    - 等 RC 開好戶就填進去
 
 3. **GitHub repo 還沒建**
-   - HTML 跟 README 提到的 `https://github.com/renstudio-dev/headmouse-helper` 是占位 URL
+   - HTML 跟 README 提到的 `https://github.com/renstudio-dev/david-mouse` 是占位 URL
    - 早上若要建 repo，把所有占位 URL 改成真實的
 
 ### 🟡 建議檢查（不會壞，但可以更好）
@@ -246,9 +246,9 @@ b548665 Initial commit
 4. 跑 `.\build.bat` 驗證 PyInstaller 能打包成功
 
 ### ☐ 重要（建議做）
-5. 建 GitHub repo `renstudio-dev/headmouse-helper`，把所有占位 URL 替換成真實 URL
+5. 建 GitHub repo `renstudio-dev/david-mouse`，把所有占位 URL 替換成真實 URL
 6. 重新拍截圖（如果 David 故事或介面有改動）：`python tools\capture_screenshots.py`
-7. 部署網頁到 Netlify 或放到 renstudio.tw/headmouse-helper/
+7. 部署網頁到 Netlify 或放到 renstudio.tw/david-mouse/
 
 ### ☐ 之後（不急）
 8. 照 `NOTION_KNOWLEDGE_BASE_SETUP.html` 教學建立 Notion 知識庫，把 `DEV_LOG.md` 匯入第一筆

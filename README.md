@@ -1,4 +1,4 @@
-# HeadMouse Helper / 頭控滑鼠助手
+# David Mouse / 大衛滑鼠
 
 A free Windows tool that helps head-mouse users avoid accidental clicks while watching YouTube (and elsewhere). One big PAUSE button — that's it.
 
@@ -18,7 +18,7 @@ run.bat       :: launch the app
 ```bat
 pip install pyinstaller
 build.bat
-:: output in dist\HeadMouseHelper.exe
+:: output in dist\david-mouse.exe
 ```
 
 ## Tech stack

@@ -2,7 +2,7 @@ from src.win32_input import get_screen_size
 
 
 WINDOW_W = 260
-WINDOW_H = 400
+WINDOW_H = 430
 COMPACT_W = 220
 COMPACT_H = 180
 MARGIN = 12

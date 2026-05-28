@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Callable, List
 
 
-SETTINGS_DIR = Path(os.environ.get("APPDATA", str(Path.home()))) / "HeadMouseHelper"
+SETTINGS_DIR = Path(os.environ.get("APPDATA", str(Path.home()))) / "DavidMouse"
 SETTINGS_FILE = SETTINGS_DIR / "settings.json"
 
 DWELL_MIN = 0.5
@@ -14,7 +14,7 @@ DWELL_MAX = 3.0
 DWELL_DEFAULT = 1.0
 
 VALID_CORNERS = ("top-left", "top-right", "bottom-left", "bottom-right")
-VALID_LANGS = ("zh-TW", "en")
+VALID_LANGS = ("zh-TW", "en", "ja", "ko")
 DEFAULT_LANG = "zh-TW"
 
 

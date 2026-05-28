@@ -7,7 +7,9 @@ import sys
 from pathlib import Path
 
 
-SHORTCUT_NAME = "HeadMouseHelper.lnk"
+SHORTCUT_NAME = "DavidMouse.lnk"
+# Old name(s) we still clean up so disable()/rename leaves no orphan in Startup.
+LEGACY_SHORTCUT_NAMES = ("HeadMouseHelper.lnk",)
 
 
 def _startup_dir() -> Path:
@@ -100,14 +102,16 @@ def _enable_via_powershell() -> bool:
 
 
 def disable() -> bool:
-    lnk = _shortcut_path()
-    if lnk.exists():
+    ok = True
+    targets = [_shortcut_path()] + [_startup_dir() / name for name in LEGACY_SHORTCUT_NAMES]
+    for lnk in targets:
+        if not lnk.exists():
+            continue
         try:
             lnk.unlink()
-            return True
         except OSError:
-            return False
-    return True
+            ok = False
+    return ok
 
 
 def sync(enabled: bool) -> bool:

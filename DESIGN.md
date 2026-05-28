@@ -1,4 +1,4 @@
-# HeadMouse Helper — 設計文件
+# David Mouse — 設計文件
 
 ## 1. 技術選型
 
@@ -50,7 +50,7 @@ fordavicdmouse/
 - **main.py** — 純入口；只負責建立 `app.App()` 並啟動 mainloop，方便 PyInstaller 找 entry point。
 - **app.py** — `App` class，集中持有 `State`、`Clicker`、`UI` 實例；註冊 UI 事件 → State 變動 → Clicker 行為。
 - **ui.py** — 建立 Tk root（240x320、always-on-top）、四角箭頭按鈕、4 個大功能按鈕（60x60+）、dwell time Scale、autostart Checkbutton。發 callback 給 App。
-- **state.py** — `State` dataclass：`dwell_seconds`、`auto_click_enabled`、`autostart_enabled`、`window_corner`。讀寫 `%APPDATA%\HeadMouseHelper\settings.json`。
+- **state.py** — `State` dataclass：`dwell_seconds`、`auto_click_enabled`、`autostart_enabled`、`window_corner`。讀寫 `%APPDATA%\DavidMouse\settings.json`。
 - **clicker.py** — 啟動背景 thread，用 `pynput.mouse.Listener` 監聽滑鼠移動，計算停留時間達 dwell 時呼叫 `win32_input.left_click()`。受 `state.auto_click_enabled` 控制 pause。
 - **win32_input.py** — `ctypes` 包 `INPUT` struct + `SendInput`，提供 `left_click(x,y)` / `double_click(x,y)` / `right_click(x,y)`。
 - **corners.py** — 用 `ctypes.windll.user32.GetSystemMetrics` 拿螢幕尺寸；計算 4 個角落座標；呼叫 `root.geometry()` 移動視窗。
@@ -110,7 +110,7 @@ pyinstaller==6.10.0     # 打包成單一 .exe（dev only）
 }
 ```
 
-存放於 `%APPDATA%\HeadMouseHelper\settings.json`，每次 UI 變動就 atomic write。
+存放於 `%APPDATA%\DavidMouse\settings.json`，每次 UI 變動就 atomic write。
 
 ## 7. 風險與 TODO
 

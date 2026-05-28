@@ -1,5 +1,5 @@
 @echo off
-REM HeadMouse Helper - one-click installer
+REM David Mouse - one-click installer
 REM Detects Python 3.10+; if missing/too old, installs Python 3.12 automatically
 REM via winget, falling back to the official python.org installer.
 REM
@@ -14,10 +14,10 @@ REM    inside a parens-block, %VAR% is expanded at parse time and a non-ASCII
 REM    value can wreck the block's bracket matching.
 chcp 65001 >nul
 cd /d "%~dp0"
-title HeadMouse Helper - Install
+title David Mouse - Install
 
 echo ========================================
-echo   HeadMouse Helper - Install
+echo   David Mouse - Install
 echo ========================================
 echo.
 
@@ -46,7 +46,7 @@ REM --- Attempt 2: download official installer from python.org ---
 echo.
 echo Falling back to direct download from python.org...
 set "PY_URL=https://www.python.org/ftp/python/3.12.7/python-3.12.7-amd64.exe"
-set "PY_INSTALLER=%TEMP%\headmouse-python-3.12.7-amd64.exe"
+set "PY_INSTALLER=%TEMP%\davidmouse-python-3.12.7-amd64.exe"
 echo Downloading: %PY_URL%
 powershell -NoProfile -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -UseBasicParsing -Uri '%PY_URL%' -OutFile '%PY_INSTALLER%' } catch { Write-Host $_.Exception.Message; exit 1 }"
 if errorlevel 1 goto :download_failed

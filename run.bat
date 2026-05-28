@@ -1,5 +1,5 @@
 @echo off
-REM HeadMouse Helper - launcher
+REM David Mouse - launcher
 REM See install.bat for why we chcp 65001 and avoid parens-blocks containing
 REM %VAR% expansions that may include non-ASCII characters.
 chcp 65001 >nul

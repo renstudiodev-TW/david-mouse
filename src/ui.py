@@ -3,6 +3,7 @@
 High contrast, large click targets for head-mouse users.
 """
 import tkinter as tk
+import webbrowser
 from typing import Callable, Optional
 
 from src.corners import WINDOW_W, WINDOW_H, geometry_string
@@ -18,6 +19,11 @@ COLOR_COUNTDOWN = "#f1c232"
 COLOR_BTN_BG = "#2d2d2d"
 COLOR_BTN_ACTIVE = "#454545"
 COLOR_ACCENT = "#2383e2"
+COLOR_AUTOSTART_ON = "#f1c232"
+COLOR_AUTOSTART_OFF = "#3a3a3a"
+COLOR_LINK = "#5aa9e6"
+CREDIT_URL = "https://renstudio.tw"
+CREDIT_TEXT = "dev by renstudio"
 
 FONT_LARGE = ("Segoe UI", 11, "bold")
 FONT_MEDIUM = ("Segoe UI", 10, "bold")
@@ -149,27 +155,40 @@ class UI:
         )
         self.dwell_scale.pack(fill="x", padx=10)
 
-        # Autostart toggle
+        # Autostart toggle — highlighted, larger so it's hard to miss
         self.autostart_btn = tk.Button(
-            self.root, text="", font=FONT_SMALL,
-            fg=COLOR_FG, bg=COLOR_BTN_BG, activebackground=COLOR_BTN_ACTIVE,
+            self.root, text="", font=FONT_MEDIUM,
+            fg=COLOR_FG, bg=COLOR_AUTOSTART_OFF, activebackground=COLOR_AUTOSTART_OFF,
             relief="flat", bd=0,
             command=self._toggle_autostart,
         )
-        self.autostart_btn.pack(fill="x", padx=10, pady=(6, 2), ipady=4)
+        self.autostart_btn.pack(fill="x", padx=10, pady=(8, 4), ipady=8)
 
-        # Language toggle
-        self.lang_btn = tk.Button(
-            self.root, text="", font=FONT_SMALL,
-            fg=COLOR_FG, bg=COLOR_BTN_BG, activebackground=COLOR_BTN_ACTIVE,
-            relief="flat", bd=0,
-            command=self._cycle_lang,
+        # Language buttons — one box per language for direct selection
+        lang_frame = tk.Frame(self.root, bg=COLOR_BG)
+        lang_frame.pack(fill="x", padx=10, pady=(0, 4))
+        self.lang_buttons: dict[str, tk.Button] = {}
+        for code in SUPPORTED_LANGS:
+            btn = tk.Button(
+                lang_frame, text=LANG_DISPLAY[code], font=FONT_MEDIUM,
+                fg=COLOR_FG, bg=COLOR_BTN_BG, activebackground=COLOR_BTN_ACTIVE,
+                relief="flat", bd=0,
+                command=lambda c=code: self.on_lang_change(c),
+            )
+            btn.pack(side="left", expand=True, fill="x", padx=2, ipady=4)
+            self.lang_buttons[code] = btn
+
+        # Credit link — sits at the very bottom, above the corner arrows row
+        credit = tk.Label(
+            self.root, text=CREDIT_TEXT, font=FONT_SMALL,
+            fg=COLOR_LINK, bg=COLOR_BG, cursor="hand2",
         )
-        self.lang_btn.pack(fill="x", padx=10, pady=(0, 2), ipady=4)
+        credit.pack(side="bottom", pady=(0, 2))
+        credit.bind("<Button-1>", lambda _e: webbrowser.open(CREDIT_URL))
 
         # Bottom corner arrows
         bottom = tk.Frame(self.root, bg=COLOR_BG)
-        bottom.pack(fill="x", side="bottom", padx=4, pady=4)
+        bottom.pack(fill="x", side="bottom", padx=4, pady=(4, 0))
         self.btn_bl = self._mk_arrow(bottom, "↙", lambda: self.on_move_corner("bottom-left"))
         self.btn_bl.pack(side="left", ipady=4)
         tk.Label(bottom, text="", bg=COLOR_BG).pack(side="left", expand=True)
@@ -180,29 +199,30 @@ class UI:
     # Compact layout — PAUSE button + 4 corner arrows + expand
     # ------------------------------------------------------------------
     def _build_compact(self) -> None:
-        # Top corner arrows
+        # Top row: ↖ arrow, expand button (mirrors compact button's slot in
+        # full mode so the toggle lives in the same place either way), ↗ arrow
         top = tk.Frame(self.root, bg=COLOR_BG)
         top.pack(fill="x", padx=4, pady=(4, 0))
         self.btn_tl = self._mk_arrow(top, "↖", lambda: self.on_move_corner("top-left"))
         self.btn_tl.pack(side="left", ipady=4)
+        self.btn_expand = tk.Button(
+            top, text="", font=FONT_SMALL,
+            fg=COLOR_FG, bg=COLOR_BTN_BG, activebackground=COLOR_BTN_ACTIVE,
+            relief="flat", bd=0, command=self.on_toggle_compact,
+        )
+        self.btn_expand.pack(side="left", padx=6, ipady=4, ipadx=4)
         tk.Label(top, text="", bg=COLOR_BG).pack(side="left", expand=True)
         self.btn_tr = self._mk_arrow(top, "↗", lambda: self.on_move_corner("top-right"))
         self.btn_tr.pack(side="right", ipady=4)
 
-        # Bottom row: corner arrows wrap the expand button
+        # Bottom corner arrows only — symmetric with the top row's arrows
         bottom = tk.Frame(self.root, bg=COLOR_BG)
         bottom.pack(fill="x", side="bottom", padx=4, pady=4)
         self.btn_bl = self._mk_arrow(bottom, "↙", lambda: self.on_move_corner("bottom-left"))
         self.btn_bl.pack(side="left", ipady=4)
+        tk.Label(bottom, text="", bg=COLOR_BG).pack(side="left", expand=True)
         self.btn_br = self._mk_arrow(bottom, "↘", lambda: self.on_move_corner("bottom-right"))
         self.btn_br.pack(side="right", ipady=4)
-        self.btn_expand = tk.Button(
-            bottom, text="", font=FONT_SMALL,
-            fg=COLOR_FG, bg=COLOR_BTN_BG, activebackground=COLOR_BTN_ACTIVE,
-            relief="flat", bd=0,
-            command=self.on_toggle_compact,
-        )
-        self.btn_expand.pack(side="left", expand=True, fill="x", padx=6, ipady=4)
 
         # PAUSE / RESUME big button fills the middle
         self.pause_btn = tk.Button(
@@ -242,14 +262,6 @@ class UI:
         self._autostart_var.set(new_val)
         self.on_autostart_change(new_val)
 
-    def _cycle_lang(self) -> None:
-        try:
-            idx = SUPPORTED_LANGS.index(self.state.lang)
-        except ValueError:
-            idx = 0
-        next_lang = SUPPORTED_LANGS[(idx + 1) % len(SUPPORTED_LANGS)]
-        self.on_lang_change(next_lang)
-
     # ------------------------------------------------------------------
     # State binding
     # ------------------------------------------------------------------
@@ -287,15 +299,22 @@ class UI:
             text=self._T("dwell_label", value=f"{state.dwell_seconds:.1f}")
         )
 
-        check_mark = "☑" if state.autostart_enabled else "☐"
-        self.autostart_btn.configure(text=f"{check_mark}  {self._T('autostart')}")
+        if state.autostart_enabled:
+            self.autostart_btn.configure(
+                text=self._T("autostart_on"),
+                bg=COLOR_AUTOSTART_ON, activebackground=COLOR_AUTOSTART_ON, fg="#1e1e1e",
+            )
+        else:
+            self.autostart_btn.configure(
+                text=self._T("autostart_off"),
+                bg=COLOR_AUTOSTART_OFF, activebackground=COLOR_AUTOSTART_OFF, fg=COLOR_FG,
+            )
 
-        next_idx = (SUPPORTED_LANGS.index(state.lang) + 1) % len(SUPPORTED_LANGS) \
-            if state.lang in SUPPORTED_LANGS else 0
-        next_lang = SUPPORTED_LANGS[next_idx]
-        self.lang_btn.configure(
-            text=f"🌐  {self._T('lang_label')}: {LANG_DISPLAY[state.lang]} → {LANG_DISPLAY[next_lang]}"
-        )
+        for code, btn in self.lang_buttons.items():
+            if code == state.lang:
+                btn.configure(bg=COLOR_ACCENT, activebackground=COLOR_ACCENT, fg=COLOR_FG)
+            else:
+                btn.configure(bg=COLOR_BTN_BG, activebackground=COLOR_BTN_ACTIVE, fg=COLOR_FG)
 
         if self._autostart_var.get() != state.autostart_enabled:
             self._autostart_var.set(state.autostart_enabled)

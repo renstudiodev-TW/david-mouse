@@ -1,4 +1,4 @@
-# Dev Log — HeadMouse Helper（YouTube 不再被誤觸的點擊輔具）
+# Dev Log — David Mouse（YouTube 不再被誤觸的點擊輔具）
 
 > **Notion import 用**：File → Import → Markdown → 選此檔。標題會變層級、表格與 code block 自動保留。
 

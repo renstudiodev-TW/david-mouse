@@ -15,9 +15,9 @@ import tempfile
 from PIL import Image
 
 # Redirect persistence to a throwaway dir BEFORE importing the app so the
-# user's real %APPDATA%\HeadMouseHelper\settings.json is never touched.
+# user's real %APPDATA%\DavidMouse\settings.json is never touched.
 from src import state as _state_module
-_TMP_SETTINGS_DIR = Path(tempfile.mkdtemp(prefix="hmh-shots-"))
+_TMP_SETTINGS_DIR = Path(tempfile.mkdtemp(prefix="dm-shots-"))
 _state_module.SETTINGS_DIR = _TMP_SETTINGS_DIR
 _state_module.SETTINGS_FILE = _TMP_SETTINGS_DIR / "settings.json"
 
