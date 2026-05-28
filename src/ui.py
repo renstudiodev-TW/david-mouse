@@ -177,24 +177,41 @@ class UI:
         self.btn_br.pack(side="right", ipady=4)
 
     # ------------------------------------------------------------------
-    # Compact layout — only PAUSE button + expand button
+    # Compact layout — PAUSE button + 4 corner arrows + expand
     # ------------------------------------------------------------------
     def _build_compact(self) -> None:
-        self.pause_btn = tk.Button(
-            self.root, text="", font=FONT_HUGE,
-            fg=COLOR_FG, bg=COLOR_RUNNING, activebackground=COLOR_RUNNING,
-            relief="flat", bd=0, height=2,
-            command=self.on_toggle_auto,
-        )
-        self.pause_btn.pack(fill="both", expand=True, padx=8, pady=(8, 4))
+        # Top corner arrows
+        top = tk.Frame(self.root, bg=COLOR_BG)
+        top.pack(fill="x", padx=4, pady=(4, 0))
+        self.btn_tl = self._mk_arrow(top, "↖", lambda: self.on_move_corner("top-left"))
+        self.btn_tl.pack(side="left", ipady=4)
+        tk.Label(top, text="", bg=COLOR_BG).pack(side="left", expand=True)
+        self.btn_tr = self._mk_arrow(top, "↗", lambda: self.on_move_corner("top-right"))
+        self.btn_tr.pack(side="right", ipady=4)
 
+        # Bottom row: corner arrows wrap the expand button
+        bottom = tk.Frame(self.root, bg=COLOR_BG)
+        bottom.pack(fill="x", side="bottom", padx=4, pady=4)
+        self.btn_bl = self._mk_arrow(bottom, "↙", lambda: self.on_move_corner("bottom-left"))
+        self.btn_bl.pack(side="left", ipady=4)
+        self.btn_br = self._mk_arrow(bottom, "↘", lambda: self.on_move_corner("bottom-right"))
+        self.btn_br.pack(side="right", ipady=4)
         self.btn_expand = tk.Button(
-            self.root, text="", font=FONT_SMALL,
+            bottom, text="", font=FONT_SMALL,
             fg=COLOR_FG, bg=COLOR_BTN_BG, activebackground=COLOR_BTN_ACTIVE,
             relief="flat", bd=0,
             command=self.on_toggle_compact,
         )
-        self.btn_expand.pack(fill="x", side="bottom", padx=8, pady=(0, 8), ipady=6)
+        self.btn_expand.pack(side="left", expand=True, fill="x", padx=6, ipady=4)
+
+        # PAUSE / RESUME big button fills the middle
+        self.pause_btn = tk.Button(
+            self.root, text="", font=FONT_HUGE,
+            fg=COLOR_FG, bg=COLOR_RUNNING, activebackground=COLOR_RUNNING,
+            relief="flat", bd=0,
+            command=self.on_toggle_auto,
+        )
+        self.pause_btn.pack(fill="both", expand=True, padx=8, pady=4)
 
     # ------------------------------------------------------------------
     # Helpers
