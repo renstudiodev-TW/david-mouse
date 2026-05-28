@@ -10,3 +10,8 @@ dist/
 .pytest_cache/
 _out.txt
 _err.txt
+
+# Docs site is deployed directly to Netlify from the local machine,
+# not via GitHub. Keep it local — main repo stays software-only.
+docs/
+.netlify/
