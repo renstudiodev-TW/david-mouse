@@ -9,7 +9,7 @@ A free Windows tool that helps head-mouse users avoid accidental clicks while wa
 ## Quick start
 
 ```bat
-install.bat   :: install dependencies (Python 3.10+ required)
+install.bat   :: auto-installs Python 3.12 if missing, then deps (per-user, no admin)
 run.bat       :: launch the app
 ```
 
