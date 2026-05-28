@@ -27,7 +27,7 @@ FONT_LARGE = ("Segoe UI", 11, "bold")
 FONT_MEDIUM = ("Segoe UI", 10, "bold")
 FONT_SMALL = ("Segoe UI", 9)
 FONT_HUGE = ("Segoe UI", 13, "bold")
-FONT_ARROW = ("Segoe UI", 14, "bold")
+FONT_ARROW = ("Segoe UI Symbol", 18, "bold")
 
 
 class UI:
