@@ -17,6 +17,15 @@ VALID_CORNERS = ("top-left", "top-right", "bottom-left", "bottom-right")
 VALID_LANGS = ("zh-TW", "en", "ja", "ko")
 DEFAULT_LANG = "zh-TW"
 
+# View modes:
+#   "full"    — every control visible (260x470)
+#   "compact" — just PAUSE + corner arrows (220x180)
+#   "watch"   — tiny recovery-only widget (e.g. 90x90), auto-click paused.
+#               Designed for "watching/singing YouTube" without the window
+#               blocking the video, while head-mouse jitter can't trigger any
+#               accidental clicks.
+VALID_VIEW_MODES = ("full", "compact", "watch")
+
 
 @dataclass
 class State:
@@ -25,11 +34,19 @@ class State:
     autostart_enabled: bool = False
     window_corner: str = "top-right"
     lang: str = DEFAULT_LANG
-    compact_mode: bool = False
+    view_mode: str = "full"
+    # Where to return to when leaving watch mode. Tracked so a user who entered
+    # watch from compact returns to compact, not full.
+    pre_watch_view_mode: str = "full"
 
     _listeners: List[Callable[["State"], None]] = field(
         default_factory=list, repr=False, compare=False
     )
+
+    @property
+    def compact_mode(self) -> bool:
+        # Back-compat for tests / external readers that still ask in boolean.
+        return self.view_mode == "compact"
 
     def to_dict(self) -> dict:
         return {
@@ -38,18 +55,39 @@ class State:
             "autostart_enabled": self.autostart_enabled,
             "window_corner": self.window_corner,
             "lang": self.lang,
-            "compact_mode": self.compact_mode,
+            "view_mode": self.view_mode,
+            "pre_watch_view_mode": self.pre_watch_view_mode,
         }
 
     @classmethod
     def from_dict(cls, data: dict) -> "State":
+        # Migrate old `compact_mode` bool → new `view_mode` enum.
+        view_mode = data.get("view_mode")
+        if view_mode is None:
+            view_mode = "compact" if data.get("compact_mode") else "full"
+        view_mode = _validate_view_mode(view_mode)
+
+        pre_watch = _validate_view_mode(data.get("pre_watch_view_mode", "full"))
+        if pre_watch == "watch":
+            pre_watch = "full"
+
+        # Booting up directly into "watch" is unfriendly — auto-click would be
+        # off and only a tiny recovery widget would be visible. Fall back to
+        # the user's pre-watch mode and re-enable auto-click so the next launch
+        # starts in a usable state.
+        auto = bool(data.get("auto_click_enabled", True))
+        if view_mode == "watch":
+            view_mode = pre_watch
+            auto = True
+
         return cls(
             dwell_seconds=_clamp_dwell(data.get("dwell_seconds", DWELL_DEFAULT)),
-            auto_click_enabled=bool(data.get("auto_click_enabled", True)),
+            auto_click_enabled=auto,
             autostart_enabled=bool(data.get("autostart_enabled", False)),
             window_corner=_validate_corner(data.get("window_corner", "top-right")),
             lang=_validate_lang(data.get("lang", DEFAULT_LANG)),
-            compact_mode=bool(data.get("compact_mode", False)),
+            view_mode=view_mode,
+            pre_watch_view_mode=pre_watch,
         )
 
     def subscribe(self, callback: Callable[["State"], None]) -> None:
@@ -84,8 +122,35 @@ class State:
         self.save()
         self._notify()
 
+    def set_view_mode(self, mode: str) -> None:
+        self.view_mode = _validate_view_mode(mode)
+        self.save()
+        self._notify()
+
     def toggle_compact(self) -> None:
-        self.compact_mode = not self.compact_mode
+        # Toggles between full and compact only. Watch mode has its own entry
+        # and exit so the user always knows how to escape it.
+        self.view_mode = "full" if self.view_mode == "compact" else "compact"
+        self.save()
+        self._notify()
+
+    def enter_watch_mode(self) -> None:
+        """Atomic transition for the 'Watch Mode' button: remember the current
+        view as the return target, pause auto-click, and switch to the tiny
+        recovery-only widget."""
+        if self.view_mode != "watch":
+            self.pre_watch_view_mode = self.view_mode
+        self.view_mode = "watch"
+        self.auto_click_enabled = False
+        self.save()
+        self._notify()
+
+    def exit_watch_mode(self) -> None:
+        """Atomic exit for the recovery button: re-enable auto-click and return
+        to whichever mode we were in before."""
+        target = self.pre_watch_view_mode if self.pre_watch_view_mode != "watch" else "full"
+        self.view_mode = target
+        self.auto_click_enabled = True
         self.save()
         self._notify()
 
@@ -127,3 +192,7 @@ def _validate_corner(corner: str) -> str:
 
 def _validate_lang(lang: str) -> str:
     return lang if lang in VALID_LANGS else DEFAULT_LANG
+
+
+def _validate_view_mode(mode: str) -> str:
+    return mode if mode in VALID_VIEW_MODES else "full"

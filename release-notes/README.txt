@@ -1,0 +1,33 @@
+David Mouse
+===========
+
+A free Windows tool that helps head-mouse users avoid accidental clicks
+while watching YouTube and elsewhere.
+
+How to run
+----------
+1. Unzip this archive.
+2. Double-click david-mouse.exe.
+
+That's it. No installer, no Python required.
+
+Windows SmartScreen warning
+---------------------------
+On first launch, Windows may show:
+
+    Windows protected your PC
+    Microsoft Defender SmartScreen prevented an unrecognized app from
+    starting.
+
+This happens because the binary is not code-signed with a paid
+certificate. The app is open-source and safe to run.
+
+To proceed, click "More info" -> "Run anyway".
+
+Full documentation, screenshots, and the David story:
+    https://davidmouse.renstudio.tw
+
+Source code (MIT license):
+    https://github.com/renstudiodev-TW/david-mouse
+
+Made by Ren Studio for David and all head-mouse users.

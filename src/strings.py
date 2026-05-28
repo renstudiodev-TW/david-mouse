@@ -25,6 +25,8 @@ STRINGS: Dict[str, Dict[str, str]] = {
         "move_now": "移動游標到目標",
         "compact": "🗗 精簡",
         "expand": "🗖 展開",
+        "watch_mode": "▶ 觀看模式",
+        "watch_resume": "▶\n恢復",
     },
     "en": {
         "app_title": "David Mouse",
@@ -45,6 +47,8 @@ STRINGS: Dict[str, Dict[str, str]] = {
         "move_now": "Move cursor to target",
         "compact": "🗗 Compact",
         "expand": "🗖 Expand",
+        "watch_mode": "▶ Watch Mode",
+        "watch_resume": "▶\nResume",
     },
     "ja": {
         "app_title": "David Mouse デビッドマウス",
@@ -65,6 +69,8 @@ STRINGS: Dict[str, Dict[str, str]] = {
         "move_now": "カーソルを目標へ移動",
         "compact": "🗗 コンパクト",
         "expand": "🗖 展開",
+        "watch_mode": "▶ 視聴モード",
+        "watch_resume": "▶\n再開",
     },
     "ko": {
         "app_title": "David Mouse 데이비드 마우스",
@@ -85,6 +91,8 @@ STRINGS: Dict[str, Dict[str, str]] = {
         "move_now": "커서를 목표로 이동",
         "compact": "🗗 축소",
         "expand": "🗖 확장",
+        "watch_mode": "▶ 시청 모드",
+        "watch_resume": "▶\n재개",
     },
 }
 

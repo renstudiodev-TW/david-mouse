@@ -1,4 +1,5 @@
-"""Tkinter UI: full mode (all controls) + compact mode (just PAUSE + expand).
+"""Tkinter UI: full mode (all controls) + compact mode (PAUSE + arrows) +
+watch mode (tiny recovery-only widget for paused video-watching).
 
 High contrast, large click targets for head-mouse users.
 """
@@ -21,6 +22,9 @@ COLOR_ACCENT = "#2383e2"
 COLOR_AUTOSTART_ON = "#f1c232"
 COLOR_AUTOSTART_OFF = "#3a3a3a"
 COLOR_CREDIT = "#777777"
+# Watch-mode resume widget: high-contrast cyan so it's obvious against any
+# video background, distinct from the green/red of the normal PAUSE button.
+COLOR_WATCH = "#2383e2"
 CREDIT_TEXT = "dev by renstudio"
 
 FONT_LARGE = ("Segoe UI", 11, "bold")
@@ -28,6 +32,7 @@ FONT_MEDIUM = ("Segoe UI", 10, "bold")
 FONT_SMALL = ("Segoe UI", 9)
 FONT_HUGE = ("Segoe UI", 13, "bold")
 FONT_ARROW = ("Segoe UI Symbol", 18, "bold")
+FONT_WATCH = ("Segoe UI", 14, "bold")
 
 
 class UI:
@@ -43,6 +48,8 @@ class UI:
         on_autostart_change: Callable[[bool], None],
         on_lang_change: Callable[[str], None],
         on_toggle_compact: Callable[[], None],
+        on_enter_watch: Callable[[], None],
+        on_exit_watch: Callable[[], None],
     ):
         self.state = state
         self.on_left_click = on_left_click
@@ -54,9 +61,11 @@ class UI:
         self.on_autostart_change = on_autostart_change
         self.on_lang_change = on_lang_change
         self.on_toggle_compact = on_toggle_compact
+        self.on_enter_watch = on_enter_watch
+        self.on_exit_watch = on_exit_watch
 
         self.root = tk.Tk()
-        self.root.geometry(geometry_string(state.window_corner, state.compact_mode))
+        self.root.geometry(geometry_string(state.window_corner, state.view_mode))
         self.root.attributes("-topmost", True)
         self.root.configure(bg=COLOR_BG)
         self.root.resizable(False, False)
@@ -69,10 +78,13 @@ class UI:
         self._countdown_remaining: float = 0.0
         self._countdown_fire: Optional[Callable[[], None]] = None
 
-        self._current_mode_compact: Optional[bool] = None
+        self._current_view_mode: Optional[str] = None
+        # pause_btn — pointer to whatever widget acts as "the big resume target"
+        # in the currently rendered view. Used by clicker's resume-zone check so
+        # dwell still works when auto-click is paused.
         self.pause_btn: Optional[tk.Button] = None
 
-        self._build_for_mode(state.compact_mode)
+        self._build_for_mode(state.view_mode)
         state.subscribe(self._on_state_change)
         self._on_state_change(state)
 
@@ -83,14 +95,24 @@ class UI:
         for child in self.root.winfo_children():
             child.destroy()
 
-    def _build_for_mode(self, compact: bool) -> None:
+    def _build_for_mode(self, view_mode: str) -> None:
         self._clear_root()
-        if compact:
-            self._build_compact()
+        if view_mode == "watch":
+            self._build_watch()
+            # In watch mode the title bar minimize button is the main risk —
+            # if the user accidentally minimizes there is no on-screen handle
+            # to recover. Strip OS chrome and place the window precisely.
+            self.root.overrideredirect(True)
         else:
-            self._build_full()
-        self._current_mode_compact = compact
-        self.root.geometry(geometry_string(self.state.window_corner, compact))
+            self.root.overrideredirect(False)
+            if view_mode == "compact":
+                self._build_compact()
+            else:
+                self._build_full()
+        self._current_view_mode = view_mode
+        # Re-assert topmost after overrideredirect flips (Windows quirk).
+        self.root.attributes("-topmost", True)
+        self.root.geometry(geometry_string(self.state.window_corner, view_mode))
 
     # ------------------------------------------------------------------
     # Full layout
@@ -133,6 +155,16 @@ class UI:
         row2.pack(fill="x", padx=10, pady=2)
         self.btn_double = self._mk_action(row2, "", self.on_double_click)
         self.btn_double.pack(fill="x")
+
+        # Watch-mode entry — distinct accent colour so the user can find it
+        # quickly when reaching for "I'm about to watch a YouTube video".
+        self.btn_watch = tk.Button(
+            self.root, text="", font=FONT_LARGE,
+            fg=COLOR_FG, bg=COLOR_WATCH, activebackground=COLOR_WATCH,
+            relief="flat", bd=0, height=2,
+            command=self.on_enter_watch,
+        )
+        self.btn_watch.pack(fill="x", padx=10, pady=(6, 2))
 
         # Dwell time scale
         dwell_frame = tk.Frame(self.root, bg=COLOR_BG)
@@ -232,6 +264,21 @@ class UI:
         self.pause_btn.pack(fill="both", expand=True, padx=8, pady=4)
 
     # ------------------------------------------------------------------
+    # Watch layout — single tall button that fills the tiny 90x90 window.
+    # Dwelling on this button exits watch mode (resumes auto-click + returns
+    # to the previous view). Auto-click is force-paused while in this mode,
+    # so the dwell engine's resume-zone check is what makes the button work.
+    # ------------------------------------------------------------------
+    def _build_watch(self) -> None:
+        self.pause_btn = tk.Button(
+            self.root, text="", font=FONT_WATCH,
+            fg=COLOR_FG, bg=COLOR_WATCH, activebackground=COLOR_WATCH,
+            relief="flat", bd=0,
+            command=self.on_exit_watch,
+        )
+        self.pause_btn.pack(fill="both", expand=True, padx=2, pady=2)
+
+    # ------------------------------------------------------------------
     # Helpers
     # ------------------------------------------------------------------
     def _mk_action(self, parent, label: str, cmd: Callable[[], None]) -> tk.Button:
@@ -264,11 +311,16 @@ class UI:
     # State binding
     # ------------------------------------------------------------------
     def _on_state_change(self, state: State) -> None:
-        # If compact mode flipped, rebuild widget tree
-        if self._current_mode_compact != state.compact_mode:
-            self._build_for_mode(state.compact_mode)
+        if self._current_view_mode != state.view_mode:
+            self._build_for_mode(state.view_mode)
 
         self.root.title(self._T("app_title"))
+
+        # Watch-mode UI is intentionally minimal: one button, no labels.
+        if state.view_mode == "watch":
+            if self.pause_btn is not None:
+                self.pause_btn.configure(text=self._T("watch_resume"))
+            return
 
         if self._countdown_job is None and self.pause_btn is not None:
             if state.auto_click_enabled:
@@ -282,7 +334,7 @@ class UI:
                     bg=COLOR_PAUSED, activebackground=COLOR_PAUSED, fg=COLOR_FG,
                 )
 
-        if state.compact_mode:
+        if state.view_mode == "compact":
             if hasattr(self, "btn_expand"):
                 self.btn_expand.configure(text=self._T("expand"))
             return
@@ -292,6 +344,8 @@ class UI:
         self.btn_right.configure(text=self._T("btn_right"))
         self.btn_double.configure(text=self._T("btn_double"))
         self.btn_compact.configure(text=self._T("compact"))
+        if hasattr(self, "btn_watch"):
+            self.btn_watch.configure(text=self._T("watch_mode"))
 
         self.dwell_label.configure(
             text=self._T("dwell_label", value=f"{state.dwell_seconds:.1f}")
@@ -321,7 +375,7 @@ class UI:
             self._dwell_var.set(state.dwell_seconds)
 
     def move_to_corner(self, corner: str) -> None:
-        self.root.geometry(geometry_string(corner, self.state.compact_mode))
+        self.root.geometry(geometry_string(corner, self.state.view_mode))
 
     def start_countdown(self, label_key: str, total_s: float, fire: Callable[[], None]) -> None:
         if self._countdown_job is not None:

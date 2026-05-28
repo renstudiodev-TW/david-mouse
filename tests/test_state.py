@@ -55,6 +55,36 @@ class StateTests(unittest.TestCase):
         s = State.from_dict({"window_corner": "nowhere"})
         self.assertEqual(s.window_corner, "top-right")
 
+    def test_compact_mode_migrates_to_view_mode(self):
+        # Old settings.json stored compact_mode: true. New schema uses view_mode.
+        s = State.from_dict({"compact_mode": True})
+        self.assertEqual(s.view_mode, "compact")
+        s = State.from_dict({"compact_mode": False})
+        self.assertEqual(s.view_mode, "full")
+
+    def test_watch_mode_persistence_falls_back_on_load(self):
+        # Persisting "watch" across restarts would leave the user staring at
+        # a paused 90x90 widget with no warning — load() must coerce back to
+        # the pre-watch view and re-enable auto-click.
+        s = State.from_dict({
+            "view_mode": "watch",
+            "pre_watch_view_mode": "compact",
+            "auto_click_enabled": False,
+        })
+        self.assertEqual(s.view_mode, "compact")
+        self.assertTrue(s.auto_click_enabled)
+
+    def test_enter_exit_watch_mode(self):
+        s = State()
+        s.view_mode = "compact"
+        s.enter_watch_mode()
+        self.assertEqual(s.view_mode, "watch")
+        self.assertFalse(s.auto_click_enabled)
+        self.assertEqual(s.pre_watch_view_mode, "compact")
+        s.exit_watch_mode()
+        self.assertEqual(s.view_mode, "compact")
+        self.assertTrue(s.auto_click_enabled)
+
     def test_corrupted_json_returns_defaults(self):
         state_module.SETTINGS_FILE.parent.mkdir(parents=True, exist_ok=True)
         state_module.SETTINGS_FILE.write_text("{not valid json", encoding="utf-8")

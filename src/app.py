@@ -27,6 +27,8 @@ class App:
             on_autostart_change=self._set_autostart,
             on_lang_change=self.state.set_lang,
             on_toggle_compact=self.state.toggle_compact,
+            on_enter_watch=self.state.enter_watch_mode,
+            on_exit_watch=self.state.exit_watch_mode,
         )
 
     def _is_over_pause_button(self, x: int, y: int) -> bool:
