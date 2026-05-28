@@ -128,10 +128,6 @@ def render_and_capture(out_path: Path, lang: str, paused: bool = False, countdow
 
 
 def main():
-    # Single canonical set (default UI lang). The app is multilingual but the
-    # tutorial uses one set of screenshots — language-suffixed filenames are
-    # not worth the maintenance burden for what's essentially an illustration.
-    LANG = "zh-TW"
     SHOTS = [
         ("ui-running.png", False, None, False),
         ("ui-paused.png", True, None, False),
@@ -139,9 +135,11 @@ def main():
         ("ui-compact-running.png", False, None, True),
         ("ui-compact-paused.png", True, None, True),
     ]
-    for name, paused, cd, compact in SHOTS:
-        render_and_capture(OUT_DIR / name, LANG, paused=paused, countdown_key=cd, compact=compact)
-        time.sleep(0.2)
+    for lang in ("zh-TW", "en", "ja", "ko"):
+        lang_dir = OUT_DIR / lang
+        for name, paused, cd, compact in SHOTS:
+            render_and_capture(lang_dir / name, lang, paused=paused, countdown_key=cd, compact=compact)
+            time.sleep(0.2)
 
 
 if __name__ == "__main__":
