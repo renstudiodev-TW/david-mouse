@@ -25,7 +25,7 @@ STRINGS: Dict[str, Dict[str, str]] = {
         "move_now": "移動游標到目標",
         "compact": "🗗 精簡",
         "expand": "🗖 展開",
-        "watch_mode": "▶ 觀看模式",
+        "watch_mode": "▶ 觀影模式",
         "watch_resume": "▶\n恢復",
     },
     "en": {
