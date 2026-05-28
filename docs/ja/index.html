@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>David Mouse — ヘッドマウス利用者のための無料クリック補助ツール</title>
+<meta name="description" content="David Mouse はヘッドマウス利用者向けの無料 Windows ツール。YouTube 視聴中の誤クリックを防ぐ、一つの大きな「一時停止」ボタンだけのシンプル設計。">
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container">
+    <div class="brand">
+      <a href="index.html">🖱️ David Mouse</a>
+      <span class="badge">無料 / Free</span>
+    </div>
+    <div class="nav-links">
+      <a href="#story">David のストーリー</a>
+      <a href="#features">機能</a>
+      <a href="#install">インストール</a>
+      <a href="#donate">支援する</a>
+      <a href="../index.html" class="lang-switch">繁中</a>
+      <a href="../en/index.html" class="lang-switch">EN</a>
+      <a href="index.html" class="lang-switch active">JP</a>
+      <a href="../ko/index.html" class="lang-switch">KR</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <span class="free-tag">100% 無料 · オープンソース · 広告なし</span>
+    <h1>ヘッドマウスでも、<br>YouTube を誤クリックなしで楽しめる</h1>
+    <p class="lede">
+      David Mouse は、頭の動きでカーソルを操作するヘッドマウス（head-mouse）利用者のために作られた小さなツールです。
+      よくある悩み——わずかな頭の揺れで自動クリックが暴発し、音楽が止まる・動画が一時停止する問題——を解決します。
+      ワンクリックで自動クリックを停止、必要なときに再開できます。
+    </p>
+    <div class="ctas">
+      <a href="#install" class="btn btn-primary">⬇ ダウンロード</a>
+      <a href="#how-to-use" class="btn btn-ghost">📖 使い方</a>
+    </div>
+  </div>
+</header>
+
+<section id="story">
+  <div class="container">
+    <h2>💛 なぜこのソフトを作ったか — David のストーリー</h2>
+    <div class="story">
+      <div class="placeholder-notice">
+        ⚠️ PLACEHOLDER：この段落は仮テキストです。公開前に David の実際のストーリーに差し替えてください。
+      </div>
+      <h3>このソフトは David のために生まれました</h3>
+      <p style="margin-bottom: 12px;">
+        David はヘッドマウスでパソコンを使う利用者です。彼にとって YouTube で音楽を聴いたり動画を見たりする時間は、
+        リラックスし、世界とつながるための数少ない楽しみの一つでした。
+      </p>
+      <p style="margin-bottom: 12px;">
+        ところが、彼の使うヘッドマウスソフトには「自動クリック」機能があり（カーソルが一定時間止まるとクリックされる）、
+        普段は便利でも YouTube を見るときには大問題でした。頭のわずかな揺れでカーソルが動画上に止まると、
+        数秒ごとに勝手に一時停止・再生が繰り返され、視聴どころではなくなってしまうのです。
+      </p>
+      <p style="margin-bottom: 12px;">
+        ご家族（私の友人／利用者でもあります）はいくつかの商用ソフトを試しましたが、どれもこの問題を解決できませんでした。
+        そこで私は専用ツールを作ることにしました——
+        <strong>「自動クリック一時停止」</strong>をワンタッチで切り替えられる、ヘッドマウスでも届きやすい大きなボタン付きの小窓を。
+      </p>
+      <p>
+        これが David Mouse の始まりです。David の役に立てたなら、
+        同じ悩みを抱える世界中の誰かにも役立つはずです。
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="features" style="background: #fff;">
+  <div class="container">
+    <h2>🎯 主な機能</h2>
+    <p class="section-lede">
+      設計の中心にあるのは一つの原則：<strong>ヘッドマウス利用者でも無理なく操作できること</strong>。
+      すべてのボタンは大きく、コントラストが高く、ホールド（カーソルを静止させる）で起動できます。
+    </p>
+
+    <div class="shots">
+      <figure class="shot">
+        <img src="../screenshots/ui-running.png" alt="自動クリック動作中のメイン画面" loading="lazy">
+        <figcaption>メイン画面：緑色＝自動クリック動作中</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="../screenshots/ui-paused.png" alt="自動クリック一時停止中" loading="lazy">
+        <figcaption>一時停止状態：赤いボタンに「ここに留まると再開」と明示</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="../screenshots/ui-countdown.png" alt="カウントダウンモード" loading="lazy">
+        <figcaption>アクションボタンのカウントダウン：カーソルを目標位置へ動かす時間を確保</figcaption>
+      </figure>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="emoji">⏯️</div>
+        <h3>ワンタッチで自動クリック停止</h3>
+        <p>大きな PAUSE ボタン。YouTube を見る前にホールドして停止、見終わったら再びホールドして再開。すべての操作が物理マウスなしで完結します。</p>
+      </div>
+      <div class="card">
+        <div class="emoji">🎚️</div>
+        <h3>ホールド時間の調整</h3>
+        <p>0.5 秒〜3 秒の間で自由に設定できます。頭の安定度は人それぞれ、自分に合うリズムを見つけてください。</p>
+      </div>
+      <div class="card">
+        <div class="emoji">🖱️</div>
+        <h3>4 つのアクションボタン</h3>
+        <p>左クリック・右クリック・ダブルクリック・一時停止／再開——2.5 秒のカウントダウン付きで、カーソルを目標へ移動する時間があります。</p>
+      </div>
+      <div class="card">
+        <div class="emoji">📐</div>
+        <h3>画面四隅にスナップ</h3>
+        <p>ウィンドウ角の矢印で、画面の左上・右上・左下・右下にウィンドウを瞬時に移動。視界を邪魔しません。</p>
+      </div>
+      <div class="card">
+        <div class="emoji">🌐</div>
+        <h3>4 言語対応 UI</h3>
+        <p>繁体中文 / English / 日本語 / 한국어 をアプリ内で切り替え可能。利用者・ご家族どちらの言語にも対応します。</p>
+      </div>
+      <div class="card">
+        <div class="emoji">🚀</div>
+        <h3>Windows 起動時に自動開始</h3>
+        <p>一度設定すれば、PC を立ち上げるたびに自動で起動。手動で開く手間がいりません。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how-to-use">
+  <div class="container">
+    <h2>📖 使い方</h2>
+    <p class="section-lede">3 ステップで完了。YouTube を見る前は、必ず先に <strong>PAUSE ボタンで自動クリックを停止</strong>してください。</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>ホールド時間を設定</h3>
+          <p>スライダーでクリックが起動するまでの停止時間を選びます。まずは 1.0 秒からお試しを。頭が安定している方は短め（0.5 秒）、不安定な方は長め（2 秒以上）に。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>YouTube を見る前に PAUSE を押す</h3>
+          <p>緑色の「● 自動クリック中」ボタンにカーソルを 1 秒ほど留めると自動でクリックされ、赤い「⏸ 一時停止」表示に切り替わります。これで動画視聴中に誤クリックが発生しません。</p>
+          <p style="margin-top: 10px; color: var(--text-muted); font-size: 14px;">💡 <strong>視聴後に再開する</strong>：同じ赤いボタンにもう一度カーソルを留めるだけ。一時停止中は、画面上でこのボタンだけがホールドに反応するため、視聴中に頭が動いて他の場所にカーソルが行っても誤クリックは起こりません。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>クリックしたいときはアクションボタン</h3>
+          <p>「左クリック / 右クリック / ダブル」のいずれかにカーソルを 1 秒留めると、ボタンが黄色になりカウントダウン開始 → 2.5 秒以内にカーソルを目標位置へ移動 → カウント終了で自動クリックされます。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="install" style="background: #f3f7fc;">
+  <div class="container">
+    <h2>⬇ インストールと起動</h2>
+    <p class="section-lede">
+      現在は GitHub からソースを取得して Python で実行する方式です。
+      パッケージ済み <code>.exe</code> インストーラは近日公開予定。
+    </p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>🏃 クイックスタート（推奨）</h3>
+        <p style="margin-bottom: 14px;">Python を事前に入れる必要はありません。<code>install.bat</code> が未インストールを検知すると自動でダウンロード・設定します（per-user、管理者権限不要）：</p>
+        <pre><span class="comment"># 1. ソースを取得</span>
+git clone https://github.com/renstudiodev-TW/david-mouse
+cd david-mouse
+
+<span class="comment"># 2. ワンクリックインストール（Python と依存関係を自動処理）</span>
+install.bat
+
+<span class="comment"># 3. 起動</span>
+run.bat</pre>
+      </div>
+      <div class="card">
+        <h3>🛠️ 単一 .exe にパッケージ化</h3>
+        <p style="margin-bottom: 14px;">Python なしでも動く単一 .exe にしたい場合：</p>
+        <pre><span class="comment"># 1. PyInstaller をインストール</span>
+pip install pyinstaller
+
+<span class="comment"># 2. ビルド実行</span>
+build.bat
+
+<span class="comment"># 3. 完成した exe は dist\ フォルダ内</span>
+dist\david-mouse.exe</pre>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature">
+        <div class="emoji">💰</div>
+        <h4>永久無料</h4>
+        <p>有料プラン・強制アップデート・広告は一切ありません。</p>
+      </div>
+      <div class="feature">
+        <div class="emoji">📂</div>
+        <h4>オープンソース</h4>
+        <p>全コード公開。読んで・改変して・フォークして OK。MIT License。</p>
+      </div>
+      <div class="feature">
+        <div class="emoji">🔒</div>
+        <h4>データ送信なし</h4>
+        <p>インターネット接続なし、個人情報収集なし、行動追跡なし。設定はあなたの PC のみに保存されます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="donate">
+  <div class="container">
+    <div class="donate">
+      <span class="coming-soon">⏳ 寄付口座準備中</span>
+      <h2>💛 このソフトがあなたやご家族の助けになったなら</h2>
+      <p>
+        David Mouse は Ren Studio が業務外の時間で無償開発・メンテナンスしているプロジェクトです。
+        障がいのある方向けのツールを継続して作り続けるため、ご支援いただけると大変嬉しいです。
+        どんな金額でも本当に励みになります 🙏
+      </p>
+      <div class="donate-info">
+        <div class="field"><span class="label">口座名義：</span><span>仁格數位科技工坊（Ren Studio）</span></div>
+        <div class="field"><span class="label">銀行：</span><span>（近日公開）</span></div>
+        <div class="field"><span class="label">支店：</span><span>（近日公開）</span></div>
+        <div class="field"><span class="label">口座番号：</span><span>（近日公開）</span></div>
+        <div class="field"><span class="label">Email：</span><span>ren.studio.dev@gmail.com</span></div>
+      </div>
+      <p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">
+        ⚠️ 寄付口座情報は準備中で、近日公開予定です。それまでは
+        <a href="mailto:ren.studio.dev@gmail.com" style="color:#fff; text-decoration: underline;">ren.studio.dev@gmail.com</a> へご連絡ください。
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div>
+      <h4>David Mouse</h4>
+      <ul>
+        <li>障がいのある方のための無料ツール</li>
+        <li>By Ren Studio（台湾）</li>
+        <li>MIT License · オープンソース</li>
+      </ul>
+    </div>
+    <div>
+      <h4>言語</h4>
+      <ul>
+        <li><a href="../index.html">繁體中文</a></li>
+        <li><a href="../en/index.html">English</a></li>
+        <li><a href="../ko/index.html">한국어</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>お問い合わせ</h4>
+      <ul>
+        <li>📧 ren.studio.dev@gmail.com</li>
+        <li>📞 +886-976-858-794</li>
+        <li>🌐 <a href="https://renstudio.tw">renstudio.tw</a></li>
+      </ul>
+    </div>
+    <div class="credit">
+      © 2026 Ren Studio · David と世界中のすべてのヘッドマウス利用者のために ♥
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

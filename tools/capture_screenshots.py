@@ -128,19 +128,19 @@ def render_and_capture(out_path: Path, lang: str, paused: bool = False, countdow
 
 
 def main():
+    # Single canonical set (default UI lang). The app is multilingual but the
+    # tutorial uses one set of screenshots — language-suffixed filenames are
+    # not worth the maintenance burden for what's essentially an illustration.
+    LANG = "zh-TW"
     SHOTS = [
-        ("ui-zh-running.png", "zh-TW", False, None, False),
-        ("ui-zh-paused.png", "zh-TW", True, None, False),
-        ("ui-zh-countdown.png", "zh-TW", False, "countdown_left", False),
-        ("ui-zh-compact-running.png", "zh-TW", False, None, True),
-        ("ui-zh-compact-paused.png", "zh-TW", True, None, True),
-        ("ui-en-running.png", "en", False, None, False),
-        ("ui-en-paused.png", "en", True, None, False),
-        ("ui-en-countdown.png", "en", False, "countdown_left", False),
-        ("ui-en-compact-running.png", "en", False, None, True),
+        ("ui-running.png", False, None, False),
+        ("ui-paused.png", True, None, False),
+        ("ui-countdown.png", False, "countdown_left", False),
+        ("ui-compact-running.png", False, None, True),
+        ("ui-compact-paused.png", True, None, True),
     ]
-    for name, lang, paused, cd, compact in SHOTS:
-        render_and_capture(OUT_DIR / name, lang, paused=paused, countdown_key=cd, compact=compact)
+    for name, paused, cd, compact in SHOTS:
+        render_and_capture(OUT_DIR / name, LANG, paused=paused, countdown_key=cd, compact=compact)
         time.sleep(0.2)
 
 
