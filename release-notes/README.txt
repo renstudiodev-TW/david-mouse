@@ -11,6 +11,21 @@ How to run
 
 That's it. No installer, no Python required.
 
+Start at logon as Administrator
+-------------------------------
+Some apps (and some elevated windows) ignore simulated clicks unless David
+Mouse itself runs as Administrator. If you need that, double-click:
+
+    setup-admin-autostart.bat
+
+It asks for administrator rights once, then registers a Scheduled Task that
+launches David Mouse at every logon with the highest available privileges,
+without any UAC prompt. To undo it, double-click remove-admin-autostart.bat.
+
+Note: the Windows Startup folder cannot do this. A shortcut there with "Run
+as administrator" checked is silently blocked by UAC, which is why a
+Scheduled Task is used instead.
+
 Windows SmartScreen warning
 ---------------------------
 On first launch, Windows may show:

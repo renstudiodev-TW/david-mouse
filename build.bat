@@ -52,8 +52,17 @@ if errorlevel 1 (
     echo [WARN] release-notes\README.txt missing - zip will not include it.
 )
 
+REM Admin-autostart helper scripts ship next to the exe. The .ps1 sits beside
+REM the .bat in the zip (the .bat looks for it in tools\ first, then alongside).
+copy /Y setup-admin-autostart.bat dist\setup-admin-autostart.bat >nul
+copy /Y remove-admin-autostart.bat dist\remove-admin-autostart.bat >nul
+copy /Y tools\admin-autostart.ps1 dist\admin-autostart.ps1 >nul
+if errorlevel 1 (
+    echo [WARN] admin autostart scripts missing - zip will not include them.
+)
+
 REM Use PowerShell Compress-Archive for a portable, dependency-free zip.
-powershell -NoProfile -Command "Compress-Archive -Force -Path 'dist\david-mouse.exe','dist\README.txt' -DestinationPath 'dist\david-mouse.zip'"
+powershell -NoProfile -Command "Compress-Archive -Force -Path 'dist\david-mouse.exe','dist\README.txt','dist\setup-admin-autostart.bat','dist\remove-admin-autostart.bat','dist\admin-autostart.ps1' -DestinationPath 'dist\david-mouse.zip'"
 if errorlevel 1 (
     echo [ERROR] Failed to create dist\david-mouse.zip.
     exit /b 1
