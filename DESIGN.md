@@ -33,7 +33,8 @@ fordavicdmouse/
 ├── build.bat                    # PyInstaller 打包腳本（純 ASCII）
 ├── src/
 │   ├── __init__.py
-│   ├── main.py                  # 程式入口（建立 App 並 mainloop）
+│   ├── main.py                  # 程式入口（單一實例檢查 → 建立 App 並 mainloop）
+│   ├── single_instance.py       # 單一實例鎖（鎖檔 + 把已開的視窗叫到前面）
 │   ├── app.py                   # 主 App class（組合所有 module）
 │   ├── ui.py                    # Tkinter UI 元件（按鈕、滑桿、角落箭頭）
 │   ├── state.py                 # 應用狀態 + 偏好設定持久化
@@ -47,7 +48,8 @@ fordavicdmouse/
 
 ## 3. Module 職責
 
-- **main.py** — 純入口；只負責建立 `app.App()` 並啟動 mainloop，方便 PyInstaller 找 entry point。
+- **main.py** — 純入口；先做單一實例檢查，再建立 `app.App()` 並啟動 mainloop，方便 PyInstaller 找 entry point。
+- **single_instance.py** — 在 `%APPDATA%\DavidMouse\instance.lock` 上用 `msvcrt.locking` 取得獨占鎖。搶不到就代表已經有一份在跑，這時讀 `instance.pid` 找出對方的視窗，`ShowWindow` + `SetForegroundWindow` + `FlashWindowEx` 把它叫到前面，自己安靜退場（不跳訊息框，避免頭控使用者還要去關對話框）。鎖由作業系統在程序結束時釋放，當機也不會留下死鎖。**不用具名 Mutex**：排程工作那份是高完整性等級，使用者手動開的是中等級，低等級程序不一定打得開高等級建立的核心物件，會誤判成沒有其他實例；鎖檔放使用者自己的 AppData 底下則兩種權限都存取得到。
 - **app.py** — `App` class，集中持有 `State`、`Clicker`、`UI` 實例；註冊 UI 事件 → State 變動 → Clicker 行為。
 - **ui.py** — 建立 Tk root（240x320、always-on-top）、四角箭頭按鈕、4 個大功能按鈕（60x60+）、dwell time Scale、autostart Checkbutton。發 callback 給 App。
 - **state.py** — `State` dataclass：`dwell_seconds`、`auto_click_enabled`、`autostart_enabled`、`window_corner`。讀寫 `%APPDATA%\DavidMouse\settings.json`。
