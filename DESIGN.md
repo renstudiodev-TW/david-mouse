@@ -19,7 +19,7 @@
 2. Tkinter 是 Python stdlib，UI 邏輯 AI 寫得順、不會踩到第三方 widget 的 quirk。
 3. PyInstaller `--onefile --noconsole` 出來的 exe ~12MB，可直接放桌面雙擊，無安裝步驟對長輩友善。
 4. `pynput` 作為 `SetWindowsHookEx` 的 wrapper 比手寫 ctypes hook 安全（避免 callback GC 引發 crash）。
-5. 開機自動啟動用 `Startup` 資料夾的 `.lnk` 捷徑（不寫 registry），符合「不動系統設定」原則。
+5. 開機自動啟動有兩種模式，都不寫 registry，符合「不動系統設定」原則：有系統管理員權限時註冊工作排程（登入觸發、最高權限、不跳 UAC），沒有時退回 `Startup` 資料夾的 `.lnk` 捷徑。啟動資料夾本身無法啟動提權程式（捷徑勾「以系統管理員身分執行」會被 UAC 直接擋掉），所以需要管理員權限的情境只能走工作排程。
 
 ## 2. 檔案結構
 
@@ -40,7 +40,7 @@ fordavicdmouse/
 │   ├── clicker.py               # 全域 hook + dwell time 偵測 + SendInput 模擬點擊
 │   ├── win32_input.py           # ctypes SendInput / SetCursorPos / GetCursorPos 包裝
 │   ├── corners.py               # 計算螢幕四角座標 + 把視窗移過去
-│   └── autostart.py             # 開機自動啟動（建立/刪除 Startup .lnk）
+│   └── autostart.py             # 開機自動啟動（工作排程／Startup .lnk）
 └── tests/
     └── test_state.py            # state 持久化單元測試（不需要 GUI）
 ```
@@ -54,7 +54,7 @@ fordavicdmouse/
 - **clicker.py** — 啟動背景 thread，用 `pynput.mouse.Listener` 監聽滑鼠移動，計算停留時間達 dwell 時呼叫 `win32_input.left_click()`。受 `state.auto_click_enabled` 控制 pause。
 - **win32_input.py** — `ctypes` 包 `INPUT` struct + `SendInput`，提供 `left_click(x,y)` / `double_click(x,y)` / `right_click(x,y)`。
 - **corners.py** — 用 `ctypes.windll.user32.GetSystemMetrics` 拿螢幕尺寸；計算 4 個角落座標；呼叫 `root.geometry()` 移動視窗。
-- **autostart.py** — 在 `%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\` 建立或刪除 `.lnk` 捷徑（用 `pythoncom + win32com.client` 或 fallback 到 PowerShell `WScript.Shell.CreateShortcut`）。
+- **autostart.py** — 兩種模式。程式以系統管理員身分執行時，用 `schtasks /Create /XML` 註冊名為 `DavidMouse` 的工作排程（LogonTrigger、`HighestAvailable`、延遲 15 秒、不限執行時間、電池模式照跑）；否則在 `%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\` 建立 `.lnk` 捷徑（用 `pythoncom + win32com.client` 或 fallback 到 PowerShell `WScript.Shell.CreateShortcut`）。兩者互斥，建立其中一個時會清掉另一個，避免開機跑出兩份。獨立的一鍵腳本在 `tools/admin-autostart.ps1`（由 `setup-admin-autostart.bat` 提權呼叫），給不想重新打包 exe 的情況用。
 
 ## 4. 關鍵套件清單（requirements.txt）
 
