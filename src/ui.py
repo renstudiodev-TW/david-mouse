@@ -72,6 +72,8 @@ class UI:
 
         self._dwell_var = tk.DoubleVar(value=state.dwell_seconds)
         self._autostart_var = tk.BooleanVar(value=state.autostart_enabled)
+        # 自動啟動是不是走「系統管理員」模式（工作排程器），由 App 告知。
+        self._autostart_admin = False
 
         self._countdown_job: Optional[str] = None
         self._countdown_label_key: Optional[str] = None
@@ -307,6 +309,13 @@ class UI:
         self._autostart_var.set(new_val)
         self.on_autostart_change(new_val)
 
+    def set_autostart_admin(self, is_admin: bool) -> None:
+        """由 App 呼叫，標示自動啟動是否為系統管理員模式，並刷新按鈕文字。"""
+        if self._autostart_admin == bool(is_admin):
+            return
+        self._autostart_admin = bool(is_admin)
+        self._on_state_change(self.state)
+
     # ------------------------------------------------------------------
     # State binding
     # ------------------------------------------------------------------
@@ -352,8 +361,9 @@ class UI:
         )
 
         if state.autostart_enabled:
+            key = "autostart_on_admin" if self._autostart_admin else "autostart_on"
             self.autostart_btn.configure(
-                text=self._T("autostart_on"),
+                text=self._T(key),
                 bg=COLOR_AUTOSTART_ON, activebackground=COLOR_AUTOSTART_ON, fg="#1e1e1e",
             )
         else:

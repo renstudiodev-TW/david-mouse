@@ -30,6 +30,10 @@ class App:
             on_enter_watch=self.state.enter_watch_mode,
             on_exit_watch=self.state.exit_watch_mode,
         )
+        # 設定檔可能跟實際狀況不同步（例如使用者手動刪了排程工作），以系統現況為準。
+        self._sync_autostart_ui()
+        if self.state.autostart_enabled != autostart.is_enabled():
+            self.state.set_autostart(autostart.is_enabled())
 
     def _is_over_pause_button(self, x: int, y: int) -> bool:
         try:
@@ -65,6 +69,11 @@ class App:
     def _set_autostart(self, enabled: bool) -> None:
         ok = autostart.sync(enabled)
         self.state.set_autostart(enabled if ok else autostart.is_enabled())
+        self._sync_autostart_ui()
+
+    def _sync_autostart_ui(self) -> None:
+        """把「自動啟動是不是系統管理員模式」告訴 UI，讓按鈕文字能區分。"""
+        self.ui.set_autostart_admin(autostart.is_admin_autostart())
 
     def run(self) -> None:
         self.clicker.start()
