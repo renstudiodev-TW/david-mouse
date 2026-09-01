@@ -2,9 +2,10 @@ from src.win32_input import get_screen_size
 
 
 WINDOW_W = 260
-# Bumped from 470 to 540 to accommodate the Watch Mode button while keeping
-# the bottom-left/right corner arrows visible.
-WINDOW_H = 540
+# Bumped from 470 to 540 to accommodate the Watch Mode button, then to 600 to
+# accommodate the Dictation button, while keeping the bottom-left/right corner
+# arrows visible.
+WINDOW_H = 600
 COMPACT_W = 220
 COMPACT_H = 180
 # Watch mode: smallest viable square the head-mouse user can still dwell on

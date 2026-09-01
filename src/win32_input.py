@@ -16,6 +16,13 @@ MOUSEEVENTF_RIGHTDOWN = 0x0008
 MOUSEEVENTF_RIGHTUP = 0x0010
 
 INPUT_MOUSE = 0
+INPUT_KEYBOARD = 1
+
+KEYEVENTF_KEYUP = 0x0002
+
+VK_CONTROL = 0x11
+# US 鍵盤配置下「/」鍵的虛擬鍵碼，當 VkKeyScanW 查不到時的備援。
+VK_OEM_2_FALLBACK = 0xBF
 
 
 if _IS_WIN:
@@ -102,6 +109,35 @@ def double_click() -> None:
     left_click()
     time.sleep(0.05)
     left_click()
+
+
+def _send_key_event(vk: int, flags: int = 0) -> None:
+    if not _IS_WIN:
+        return
+    inp = _INPUT(type=INPUT_KEYBOARD)
+    inp.ki = _KEYBDINPUT(wVk=vk, wScan=0, dwFlags=flags, time=0, dwExtraInfo=0)
+    _SendInput(1, ctypes.byref(inp), ctypes.sizeof(_INPUT))
+
+
+def _vk_for_char(ch: str) -> int:
+    """用目前的鍵盤配置查字元對應的虛擬鍵碼，查不到就回 0。"""
+    if not _IS_WIN:
+        return 0
+    res = ctypes.windll.user32.VkKeyScanW(ord(ch))
+    if res == -1:
+        return 0
+    return res & 0xFF
+
+
+def ctrl_slash() -> None:
+    """送出 Ctrl+/ 組合鍵，用來觸發 ChatGPT 桌面版的語音聽寫快捷鍵。"""
+    if not _IS_WIN:
+        return
+    vk_slash = _vk_for_char("/") or VK_OEM_2_FALLBACK
+    _send_key_event(VK_CONTROL)
+    _send_key_event(vk_slash)
+    _send_key_event(vk_slash, KEYEVENTF_KEYUP)
+    _send_key_event(VK_CONTROL, KEYEVENTF_KEYUP)
 
 
 def get_screen_size() -> tuple[int, int]:

@@ -29,6 +29,7 @@ class App:
             on_toggle_compact=self.state.toggle_compact,
             on_enter_watch=self.state.enter_watch_mode,
             on_exit_watch=self.state.exit_watch_mode,
+            on_dictation=self._do_dictation,
         )
         # 設定檔可能跟實際狀況不同步（例如使用者手動刪了排程工作），以系統現況為準。
         self._sync_autostart_ui()
@@ -58,6 +59,9 @@ class App:
 
     def _do_right_click(self) -> None:
         self._arm_action("countdown_right", win32_input.right_click)
+
+    def _do_dictation(self) -> None:
+        self._arm_action("countdown_dictation", win32_input.ctrl_slash)
 
     def _toggle_auto(self) -> None:
         self.state.toggle_auto_click()

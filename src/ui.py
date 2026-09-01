@@ -25,6 +25,8 @@ COLOR_CREDIT = "#777777"
 # Watch-mode resume widget: high-contrast cyan so it's obvious against any
 # video background, distinct from the green/red of the normal PAUSE button.
 COLOR_WATCH = "#2383e2"
+# 語音聽寫按鈕：跟其他動作按鈕明顯不同色，方便使用者一眼找到。
+COLOR_DICTATION = "#8e44ad"
 CREDIT_TEXT = "dev by renstudio"
 
 FONT_LARGE = ("Segoe UI", 11, "bold")
@@ -50,6 +52,7 @@ class UI:
         on_toggle_compact: Callable[[], None],
         on_enter_watch: Callable[[], None],
         on_exit_watch: Callable[[], None],
+        on_dictation: Callable[[], None],
     ):
         self.state = state
         self.on_left_click = on_left_click
@@ -63,6 +66,7 @@ class UI:
         self.on_toggle_compact = on_toggle_compact
         self.on_enter_watch = on_enter_watch
         self.on_exit_watch = on_exit_watch
+        self.on_dictation = on_dictation
 
         self.root = tk.Tk()
         self.root.geometry(geometry_string(state.window_corner, state.view_mode))
@@ -157,6 +161,15 @@ class UI:
         row2.pack(fill="x", padx=10, pady=2)
         self.btn_double = self._mk_action(row2, "", self.on_double_click)
         self.btn_double.pack(fill="x")
+
+        # ChatGPT 語音聽寫 — 送出 Ctrl+/，觸發 ChatGPT 桌面版預設的聽寫快捷鍵。
+        self.btn_dictation = tk.Button(
+            self.root, text="", font=FONT_LARGE,
+            fg=COLOR_FG, bg=COLOR_DICTATION, activebackground=COLOR_DICTATION,
+            relief="flat", bd=0, height=2,
+            command=self.on_dictation,
+        )
+        self.btn_dictation.pack(fill="x", padx=10, pady=2)
 
         # Watch-mode entry — distinct accent colour so the user can find it
         # quickly when reaching for "I'm about to watch a YouTube video".
@@ -352,6 +365,8 @@ class UI:
         self.btn_left.configure(text=self._T("btn_left"))
         self.btn_right.configure(text=self._T("btn_right"))
         self.btn_double.configure(text=self._T("btn_double"))
+        if hasattr(self, "btn_dictation"):
+            self.btn_dictation.configure(text=self._T("btn_dictation"))
         self.btn_compact.configure(text=self._T("compact"))
         if hasattr(self, "btn_watch"):
             self.btn_watch.configure(text=self._T("watch_mode"))
