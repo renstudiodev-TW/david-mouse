@@ -7,7 +7,9 @@ WINDOW_W = 260
 # arrows visible.
 WINDOW_H = 600
 COMPACT_W = 220
-COMPACT_H = 180
+# Bumped from 180 to 260 to fit the Dictation button (>=60px tall target)
+# below PAUSE without shrinking PAUSE below the head-mouse tap-target minimum.
+COMPACT_H = 300
 # Watch mode: smallest viable square the head-mouse user can still dwell on
 # while a YouTube video plays full-screen behind it. 90px ≥ the 60x60 minimum
 # tap target plus padding for the high-contrast border.

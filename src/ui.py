@@ -276,7 +276,19 @@ class UI:
             relief="flat", bd=0,
             command=self.on_toggle_auto,
         )
-        self.pause_btn.pack(fill="both", expand=True, padx=8, pady=4)
+        self.pause_btn.pack(fill="both", expand=True, padx=8, pady=(4, 2))
+
+        # Dictation button — kept in compact mode too (not just full) so it
+        # stays reachable without expanding the window. Fixed ipady (not
+        # expand=True) guarantees it stays >=60px tall regardless of how
+        # much extra space PAUSE's expand=True soaks up above it.
+        self.btn_dictation = tk.Button(
+            self.root, text="", font=FONT_MEDIUM,
+            fg=COLOR_FG, bg=COLOR_DICTATION, activebackground=COLOR_DICTATION,
+            relief="flat", bd=0,
+            command=self.on_dictation,
+        )
+        self.btn_dictation.pack(fill="x", padx=8, pady=(0, 4), ipady=22)
 
     # ------------------------------------------------------------------
     # Watch layout — single tall button that fills the tiny 90x90 window.
@@ -359,6 +371,8 @@ class UI:
         if state.view_mode == "compact":
             if hasattr(self, "btn_expand"):
                 self.btn_expand.configure(text=self._T("expand"))
+            if hasattr(self, "btn_dictation"):
+                self.btn_dictation.configure(text=self._T("btn_dictation"))
             return
 
         # Full-mode-only widget updates below
