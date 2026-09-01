@@ -130,7 +130,13 @@ def _vk_for_char(ch: str) -> int:
 
 
 def ctrl_slash() -> None:
-    """送出 Ctrl+/ 組合鍵，用來觸發 ChatGPT 桌面版的語音聽寫快捷鍵。"""
+    """送出 Ctrl+/ 組合鍵，用來觸發 ChatGPT 桌面版的語音聽寫快捷鍵。
+
+    鍵盤事件只會送到目前有焦點的視窗，不會跟著游標位置跑，所以呼叫前一定
+    要先用 left_click() 在目標視窗（例如 ChatGPT 輸入框）點一下取得焦點，
+    否則這個組合鍵會送到剛才按下 David Mouse 按鈕、目前仍持有焦點的
+    David Mouse 視窗本身，而不是使用者真正想要的目標視窗。見 dictation()。
+    """
     if not _IS_WIN:
         return
     vk_slash = _vk_for_char("/") or VK_OEM_2_FALLBACK
@@ -138,6 +144,15 @@ def ctrl_slash() -> None:
     _send_key_event(vk_slash)
     _send_key_event(vk_slash, KEYEVENTF_KEYUP)
     _send_key_event(VK_CONTROL, KEYEVENTF_KEYUP)
+
+
+def dictation() -> None:
+    """先在目前游標位置點一下左鍵取得焦點（跟 left_click 按鈕一樣，倒數期間
+    使用者會把游標移到 ChatGPT 輸入框），再送出 Ctrl+/ 觸發語音聽寫。
+    """
+    left_click()
+    time.sleep(0.05)
+    ctrl_slash()
 
 
 def get_screen_size() -> tuple[int, int]:

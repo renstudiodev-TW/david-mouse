@@ -61,7 +61,7 @@ class App:
         self._arm_action("countdown_right", win32_input.right_click)
 
     def _do_dictation(self) -> None:
-        self._arm_action("countdown_dictation", win32_input.ctrl_slash)
+        self._arm_action("countdown_dictation", win32_input.dictation)
 
     def _toggle_auto(self) -> None:
         self.state.toggle_auto_click()
